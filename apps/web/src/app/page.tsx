@@ -3,17 +3,19 @@ import Link from 'next/link';
 import styles from './page.module.css';
 
 /**
- * Racine de l'application.
+ * Racine de l'application — état des lieux vivant.
  *
- * LOT 00 ne livre aucune interface métier : ni écran, ni composant, ni backend.
- * Cette page est un état des lieux, pas une landing. La landing publique est le
- * LOT 22 et n'existe pas encore.
+ * Cette page récapitule ce qui est réellement livré à ce stade et renvoie vers
+ * les écrans et galeries techniques qui existent. Elle n'est PAS une landing
+ * publique (LOT 22) et ne présente aucune donnée métier : les galeries /dev
+ * affichent des données simulées, signalées comme telles.
  */
 
 const LOTS = [
-  { id: 'LOT 00', name: 'Cadrage & contrat de tokens', state: 'en cours de validation' },
-  { id: 'LOT 01', name: 'Primitives du Design System', state: 'non commencé' },
-  { id: 'LOT 22', name: 'Landing page publique', state: 'non commencé' }
+  { id: 'LOT 00', name: 'Cadrage & contrat de tokens', state: 'construit — validé provisoirement' },
+  { id: 'LOT 01', name: 'Fondations Design System', state: 'construit — validé provisoirement' },
+  { id: 'LOT 02', name: 'App Shell', state: 'construit — validé' },
+  { id: 'LOT 03', name: 'Data & Feedback', state: 'construit — validé' }
 ];
 
 export default function HomePage() {
@@ -21,32 +23,47 @@ export default function HomePage() {
     <main className={styles.page}>
       <section className={styles.card}>
         <p className={`${styles.eyebrow} t-section-label`}>divini exo</p>
-        <h1 className={styles.title}>Contrat de tokens établi</h1>
+        <h1 className={styles.title}>Fondations, App Shell et données en place</h1>
         <p className={`${styles.lede} t-body`}>
-          Le LOT 00 est livré : squelette du dépôt, contrat de tokens (thème sombre
-          canonique, thème clair dérivé et à valider), conventions écrites et contrôles
-          automatiques.
+          Les lots 00 à 03 sont livrés : contrat de tokens, primitives du Design
+          System, App Shell (navigation, thème, densité, notifications) et
+          composants de données (table virtualisée, KPI, graphiques, kanban).
+          Le premier écran métier arrive au LOT 05.
         </p>
 
         <div className={styles.warning}>
           <p className={`${styles.warningTitle} t-label`}>Ce qui n’existe pas encore</p>
           <p className={`${styles.warningBody} t-body-small`}>
-            Aucun écran, aucun composant d’interface, aucune donnée, aucun backend.
-            Les couleurs affichées ici sont le contrat lui-même, pas une maquette
-            d’application. Rien n’est « fonctionnel » au sens métier.
+            Aucun écran métier, aucun backend réel, aucune authentification. Les
+            données visibles dans les galeries /dev sont simulées et signalées comme
+            telles. Rien n’est « fonctionnel » au sens métier.
           </p>
         </div>
 
-        <nav className={styles.nav} aria-label="Accès technique">
-          <Link className={styles.link} href="/dev/tokens">
-            Ouvrir la galerie technique des tokens
+        <nav className={styles.nav} aria-label="Accès aux écrans livrés">
+          <Link className={styles.link} href="/app">
+            Ouvrir l’App Shell
+          </Link>
+          <Link className={styles.linkGhost} href="/dev/tokens">
+            Tokens
+          </Link>
+          <Link className={styles.linkGhost} href="/dev/ui">
+            Composants
+          </Link>
+          <Link className={styles.linkGhost} href="/dev/shell">
+            Shell
+          </Link>
+          <Link className={styles.linkGhost} href="/dev/data">
+            Data
           </Link>
         </nav>
       </section>
 
       <section className={styles.table} aria-label="Avancement des lots">
         <table>
-          <caption className={styles.caption}>Avancement</caption>
+          <caption className={styles.caption}>
+            Avancement de la phase frontend — 16 %
+          </caption>
           <thead>
             <tr>
               <th scope="col" className="t-table-header">Lot</th>
