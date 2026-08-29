@@ -18,8 +18,17 @@ export const easing = {
   enter: 'cubic-bezier(.16,.84,.24,1)',
   /** Sortie d'élément : plus sobre, sans accélération finale. */
   exit: 'cubic-bezier(.4,0,.6,1)',
+  /**
+   * Réservé aux animations PROPORTIONNELLES AU TEMPS : barre de progression qui
+   * décompte, indicateur de chargement en rotation.
+   *
+   * Ce n'est pas un easing de transition. Un décompte non linéaire mentirait sur
+   * le temps restant : à mi-parcours visuel, il ne resterait pas la moitié du temps.
+   * Interdit partout ailleurs — voir `forbidden`.
+   */
+  linear: 'linear',
   /** Interdit — présent uniquement pour être détecté par le contrôle automatique. */
-  forbidden: ['linear', 'ease', 'ease-in', 'ease-out', 'ease-in-out']
+  forbidden: ['ease', 'ease-in', 'ease-out', 'ease-in-out']
 };
 
 /** Durées canoniques, par registre d'usage. */

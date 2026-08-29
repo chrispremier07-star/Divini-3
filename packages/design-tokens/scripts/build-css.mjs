@@ -22,7 +22,7 @@ import {
   letterSpacing,
   typeRole
 } from '../src/typography.mjs';
-import { space, density, defaultDensity } from '../src/spacing.mjs';
+import { space, density, control, defaultDensity } from '../src/spacing.mjs';
 import { radius, borderWidth } from '../src/radius.mjs';
 import { shadow } from '../src/shadow.mjs';
 import {
@@ -159,6 +159,7 @@ const neutral = [
   ['--ease-standard', easing.standard],
   ['--ease-enter', easing.enter],
   ['--ease-exit', easing.exit],
+  ['--ease-linear', easing.linear],
   ...toVars(sidebar, 'sidebar'),
   ...toVars(topbar, 'topbar'),
   ...toVars(tabs, 'tabs'),
@@ -180,7 +181,7 @@ const typeRoleVars = Object.entries(typeRole).flatMap(([role, r]) => [
 ]);
 
 /** Densité : les composants consomment ces alias, jamais les valeurs brutes. */
-const densityVars = (d) => toVars(density[d], 'd');
+const densityVars = (d) => toVars(density[d], 'd').concat(toVars(control[d], 'ctl'));
 
 const header = `/**
  * DIVINI exo — Feuille de tokens GÉNÉRÉE. Ne pas éditer.
@@ -317,6 +318,9 @@ export declare const typeRole: Record<string, {
 export declare const space: ${JSON.stringify(space)};
 export declare const density: Record<DensityName, Record<string, string>>;
 export declare const densityLabels: Record<DensityName, string>;
+export declare const control: Record<DensityName, Record<string, string>>;
+export declare const controlSizes: ['sm', 'md', 'lg'];
+export type ControlSize = 'sm' | 'md' | 'lg';
 export declare const defaultDensity: DensityName;
 export declare const radius: ${JSON.stringify(radius)};
 export declare const radiusRole: Record<string, keyof typeof radius>;
@@ -324,7 +328,14 @@ export declare const borderWidth: ${JSON.stringify(borderWidth)};
 export declare const borderRole: Record<string, keyof typeof borderWidth>;
 export declare const shadow: ${JSON.stringify(shadow)};
 export declare const shadowRole: Record<string, keyof typeof shadow>;
-export declare const easing: { standard: string; enter: string; exit: string; forbidden: string[] };
+export declare const easing: {
+  standard: string;
+  enter: string;
+  exit: string;
+  /** Réservé aux animations proportionnelles au temps (décompte, rotation de chargement). */
+  linear: string;
+  forbidden: string[];
+};
 export declare const duration: ${JSON.stringify(duration)};
 export declare const motionRole: Record<string, { duration: keyof typeof duration; easing: string }>;
 export declare const translate: ${JSON.stringify(translate)};

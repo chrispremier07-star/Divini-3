@@ -3,7 +3,7 @@
 > **Socle obligatoire** : `prompts/00-REGLES-COMMUNES.md` (à lire avant ce lot).
 > **Dépend de** : décision de direction artistique — ✅ prise le 2026-08-28 (Option A, thème
 > sombre par défaut). **Débloque** : LOT 01, LOT 22.
-> **Périmètre** : FRONTEND ONLY. **État** : non démarré.
+> **Périmètre** : FRONTEND ONLY. **État** : construit, inspecté, corrigé — en attente de validation explicite.
 
 ---
 

@@ -85,6 +85,53 @@ export const density = {
 export const defaultDensity = 'comfortable';
 
 /**
+ * Tailles de contrôle — ajout LOT 01, justifié par §2.1 du lot
+ * (« Button primary / ghost / danger / subtil, tailles sm–md–lg »).
+ *
+ * Un composant ne choisit pas sa hauteur : il reçoit `size` et consomme l'alias.
+ * La bascule de densité reste donc transparente pour lui.
+ */
+export const control = {
+  comfortable: {
+    heightSm: '30px',
+    heightMd: '38px',
+    heightLg: '46px',
+    padXSm: '10px',
+    padXMd: '16px',
+    padXLg: '22px',
+    iconSm: '16px',
+    iconMd: '18px',
+    iconLg: '20px',
+    gapSm: '6px',
+    gapMd: '8px',
+    gapLg: '10px',
+    fieldSm: '32px',
+    fieldMd: '40px',
+    fieldLg: '46px'
+  },
+  compact: {
+    heightSm: '26px',
+    heightMd: '32px',
+    heightLg: '40px',
+    padXSm: '8px',
+    padXMd: '12px',
+    padXLg: '16px',
+    iconSm: '14px',
+    iconMd: '16px',
+    iconLg: '18px',
+    gapSm: '4px',
+    gapMd: '6px',
+    gapLg: '8px',
+    fieldSm: '28px',
+    fieldMd: '32px',
+    fieldLg: '40px'
+  }
+};
+
+/** Tailles de contrôle admises — garde-fou contractuel. */
+export const controlSizes = ['sm', 'md', 'lg'];
+
+/**
  * Libellés d'interface — métadonnée d'affichage, volontairement HORS de l'objet
  * `density` pour ne pas être émise en variable CSS.
  */

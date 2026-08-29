@@ -73,7 +73,7 @@ LOT 00 ─┬─► LOT 01 ─┬─► LOT 02 ─┬─► LOT 04 ─┬─► 
 | [23](LOT-23-personal-erp.md) | Personal ERP | 09 | — | non démarré |
 | [24](LOT-24-consolidation-validation-gate.md) | Consolidation & Validation Gate | tous | passage backend | non démarré |
 
-**Avancement global de la phase frontend : 0 %** (aucun lot démarré).
+**Avancement global de la phase frontend : 8 %** — LOT 00 et LOT 01 construits, inspectés et corrigés. **Aucun lot validé** : la validation explicite du LOT 00 n'a pas été donnée avant le démarrage du LOT 01.
 
 ## 4. Structure identique de chaque prompt de lot
 

@@ -107,8 +107,8 @@ permission denied`.
 
 > « Le visuel ne doit jamais mentir sur l'état réel du système. » (l. 7984)
 
-États d'écran obligatoires en plus : **chargement** (skeletons), **vide utile** (l. 3221–3236),
-**erreur non technique** (l. 3237–3252), **permission refusée**, **module non activé**,
+États d'écran obligatoires en plus : **chargement** (skeletons), **vide utile** (l. 3204–3219),
+**erreur non technique** (l. 3221–3235), **permission refusée**, **module non activé**,
 **hors ligne**.
 
 ## 4. Responsive canonique (l. 8359–8382)

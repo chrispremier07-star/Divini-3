@@ -19,7 +19,14 @@ export {
   typeRole,
   allowedFontFamilies
 } from './typography.mjs';
-export { space, density, densityLabels, defaultDensity } from './spacing.mjs';
+export {
+  space,
+  density,
+  densityLabels,
+  control,
+  controlSizes,
+  defaultDensity
+} from './spacing.mjs';
 export { radius, radiusRole, borderWidth, borderRole, maxRadius } from './radius.mjs';
 export { shadow, shadowRole } from './shadow.mjs';
 export {

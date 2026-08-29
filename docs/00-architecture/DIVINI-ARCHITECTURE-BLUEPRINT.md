@@ -978,7 +978,7 @@ Les deux options étaient mutuellement exclusives :
 | **Actions** | Button (primary/ghost/danger), IconButton, Dropdown, ContextMenu, QuickActions, ConfirmDialog | l. 7922–7931 ; confirmations l. 3237–3252 |
 | **Formulaires** | Input, Search, Select, DatePicker, Checkbox, Radio, Switch, FileUpload, Stepper, FieldGroup, FormErrors | radius 6–8 px, focus-visible obligatoire |
 | **Data** | KPI (count-up 1 100–1 200 ms), Chart (reveal progressif), DataTable (header compact uppercase, hover row, actions au hover, mono sur identifiants), Kanban (drag-over `accent-soft`), Timeline, ActivityFeed, Progress, DataPanel | l. 7890–7921, 7910–7921 |
-| **Feedback** | Alert, NotificationItem, Toast (entrée/sortie droite + progress bar), Modal, Drawer, EmptyState, Skeleton, ErrorState, PermissionDenied, OfflineState, SyncingState, ModuleUnavailable | l. 7940–7950, 7964–7984, 3221–3236 |
+| **Feedback** | Alert, NotificationItem, Toast (entrée/sortie droite + progress bar), Modal, Drawer, EmptyState, Skeleton, ErrorState, PermissionDenied, OfflineState, SyncingState, ModuleUnavailable | l. 7940–7950, 7964–7984, 3204–3219 |
 | **Identité** | Avatar, StatusDot, Badge, SeverityIndicator, ScoreHealth, AgentBadge (COPILOT/AUTOPILOT/RADAR/CASH VISION/GUARDIAN) | l. 7951–7963 |
 | **Marketing (landing)** | StickyNav, Hero, MockupParallax, Marquee, Stats, StickyShowcase, FeatureGrid, AgentCards (5 motions dédiées), Pricing, FAQ, FinalCTA, Footer | l. 8014–8256 |
 

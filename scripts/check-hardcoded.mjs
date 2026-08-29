@@ -56,9 +56,16 @@ function scan(file) {
   const lines = readFileSync(file, 'utf8').split('\n');
   const isStyle = extname(file) === '.css' || extname(file) === '.scss';
 
+  // Un commentaire de bloc s'étend sur plusieurs lignes : l'état doit donc être
+  // suivi d'une ligne à l'autre. Sans cela, le contenu d'un JSDoc était analysé
+  // comme du code et les valeurs qu'il documente étaient signalées à tort.
+  let inBlockComment = false;
+
   lines.forEach((line, i) => {
     const n = i + 1;
-    const code = stripComment(line);
+    const code = stripComment(line, isStyle, (v) => {
+      inBlockComment = v;
+    }, inBlockComment);
     if (!code.trim()) return;
 
     const push = (rule, match, why) =>
@@ -120,10 +127,24 @@ function scan(file) {
       }
     }
 
-    // 8. Easing interdit (jamais linear / ease brut)
+    // 8. Easing interdit — forme longue ET shorthand.
+    //
+    // Le contrôle ne vérifiait que `transition-timing-function` /
+    // `animation-timing-function`. Un `animation: spin 1s linear infinite`
+    // passait donc au travers : détection asymétrique, donc fausse confiance.
+    //
+    // `linear` reste admis uniquement via var(--ease-linear), réservé aux
+    // animations proportionnelles au temps (décompte, rotation de chargement).
+    const FORBIDDEN_EASING = /\b(?:linear|ease|ease-in|ease-out|ease-in-out)\b/i;
     for (const m of code.matchAll(/\b(?:transition-timing-function|animation-timing-function)\s*:\s*([^;]+)/g)) {
-      if (!usesVar(m[1]) && /^(linear|ease|ease-in|ease-out|ease-in-out)$/i.test(m[1].trim())) {
-        push('easing-interdit', m[0], 'utiliser var(--ease-standard)');
+      if (!usesVar(m[1]) && FORBIDDEN_EASING.test(m[1])) {
+        push('easing-interdit', m[0], 'utiliser var(--ease-standard) ou var(--ease-linear)');
+      }
+    }
+    for (const m of code.matchAll(/\b(?:transition|animation)\s*:\s*([^;]+)/g)) {
+      if (usesVar(m[1])) continue;
+      if (FORBIDDEN_EASING.test(m[1])) {
+        push('easing-interdit', m[0], 'utiliser var(--ease-standard) ou var(--ease-linear)');
       }
     }
     for (const m of code.matchAll(/\bcubic-bezier\([^)]*\)/g)) {
@@ -177,11 +198,62 @@ function scan(file) {
   });
 }
 
-/** Retire les commentaires de fin de ligne (// et /* *\/) sans toucher aux URLs. */
-function stripComment(line) {
-  return line
-    .replace(/\/\*.*?\*\//g, '')
-    .replace(/(?<![:'"])\/\/.*$/g, '');
+/**
+ * Retire les commentaires d'une ligne, en suivant l'état des blocs multi-lignes.
+ *
+ * @param line     ligne brute
+ * @param isStyle  true pour CSS/SCSS (pas de commentaire `//`)
+ * @param setState callback pour reporter l'état « dans un bloc » à l'appelant
+ * @param wasIn    état hérité de la ligne précédente
+ */
+function stripComment(line, isStyle, setState, wasIn) {
+  let out = '';
+  let inBlock = wasIn;
+  let i = 0;
+
+  while (i < line.length) {
+    if (inBlock) {
+      const end = line.indexOf('*/', i);
+      if (end === -1) {
+        i = line.length;
+      } else {
+        inBlock = false;
+        i = end + 2;
+      }
+      continue;
+    }
+
+    if (line.startsWith('/*', i)) {
+      inBlock = true;
+      i += 2;
+      continue;
+    }
+
+    // `//` n'est un commentaire qu'en JS/TS — en CSS ce serait une valeur.
+    if (!isStyle && line.startsWith('//', i)) {
+      i = line.length;
+      continue;
+    }
+
+    // Les chaînes et URLs sont recopiées telles quelles.
+    const quote = line[i];
+    if (quote === '"' || quote === "'" || quote === '`') {
+      let j = i + 1;
+      while (j < line.length && line[j] !== quote) {
+        if (line[j] === '\\') j++;
+        j++;
+      }
+      out += line.slice(i, j + 1);
+      i = j + 1;
+      continue;
+    }
+
+    out += line[i];
+    i++;
+  }
+
+  setState(inBlock);
+  return out;
 }
 
 const usesVar = (s) => /var\(--/.test(s);

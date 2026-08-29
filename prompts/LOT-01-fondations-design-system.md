@@ -2,7 +2,7 @@
 
 > **Socle obligatoire** : `prompts/00-REGLES-COMMUNES.md`.
 > **Dépend de** : LOT 00 (validé). **Débloque** : LOT 02, LOT 03, LOT 22.
-> **Périmètre** : FRONTEND ONLY. **État** : non démarré.
+> **Périmètre** : FRONTEND ONLY. **État** : construit, inspecté, corrigé — en attente de validation explicite.
 
 ---
 
@@ -65,12 +65,12 @@ n'existe pas déjà ; `ConfirmDialog` et `Modal` partagent la même base d'overl
   démonstration, jamais un bouton mort.
 - **ConfirmDialog obligatoire** pour les opérations critiques : suppression, annulation, gros
   export, campagne importante, modification critique, réactivation, changement de permissions
-  (l. 3253–3275).
-- **EmptyState utile** : titre + explication + action. Modèle canonique (l. 3221–3236) :
+  (l. 3237–3252).
+- **EmptyState utile** : titre + explication + action. Modèle canonique (l. 3204–3219) :
   « Aucun prospect. » → « Commencez par ajouter votre premier prospect pour suivre vos
   opportunités commerciales. » → `Ajouter un prospect`.
 - **ErrorState non technique** : message compréhensible et exploitable, jamais de stack trace à
-  l'utilisateur ; les détails techniques restent dans les logs (l. 3237–3252).
+  l'utilisateur ; les détails techniques restent dans les logs (l. 3221–3235).
 - **PermissionDenied** : explique ce qui manque et vers qui se tourner ; ne simule aucune
   permission.
 - **Clavier** : tout overlay se ferme à `Escape`, tout menu se navigue aux flèches, le focus est
