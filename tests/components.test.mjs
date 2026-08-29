@@ -11,7 +11,7 @@
 import { after, afterEach, before, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { ConfirmDialog, Dropdown, Modal } from '../apps/web/src/components/ui/index.ts';
+import { ConfirmDialog, Drawer, Dropdown, Modal } from '../apps/web/src/components/ui/index.ts';
 
 import { createDom } from './helpers/dom.mjs';
 import { click, h, pressKey, render, unmountAll } from './helpers/react.mjs';
@@ -358,6 +358,179 @@ describe('Dropdown', () => {
       disabled.disabled || disabled.getAttribute('aria-disabled') === 'true',
       'l’entrée indisponible est marquée comme telle'
     );
+
+    await view.unmount();
+  });
+});
+
+describe('Overlays montés simultanément', () => {
+  /**
+   * Les titres portaient des ids codés en dur (« modal-title »,
+   * « confirm-title »…). Deux overlays ouverts en même temps produisaient donc
+   * des ids DOM dupliqués : `aria-labelledby` résolvait alors vers le mauvais
+   * titre et le lecteur d'écran annonçait l'intitulé d'un autre dialogue.
+   */
+  it('ne produit aucun id DOM dupliqué', async () => {
+    reset();
+    // Le cas réel : une confirmation ouverte DEPUIS une modale, donc deux
+    // instances du même composant montées en même temps.
+    const view = await render(
+      h('div', null, [
+        h(Modal, {
+          key: 'm1',
+          open: true,
+          onClose: () => {},
+          title: 'Modale parente',
+          children: h('p', null, 'contenu')
+        }),
+        h(Modal, {
+          key: 'm2',
+          open: true,
+          onClose: () => {},
+          title: 'Modale imbriquée',
+          children: h('p', null, 'autre contenu')
+        }),
+        h(ConfirmDialog, {
+          key: 'c1',
+          open: true,
+          title: 'Première confirmation',
+          description: 'Une opération.',
+          confirmLabel: 'Valider',
+          onConfirm: () => {},
+          onCancel: () => {}
+        }),
+        h(ConfirmDialog, {
+          key: 'c2',
+          open: true,
+          title: 'Seconde confirmation',
+          description: 'Une autre opération.',
+          confirmLabel: 'Supprimer',
+          onConfirm: () => {},
+          onCancel: () => {}
+        })
+      ])
+    );
+
+    const ids = Array.from(view.container.querySelectorAll('[id]')).map((el) => el.id);
+    const duplicates = ids.filter((id, i) => ids.indexOf(id) !== i);
+    assert.deepEqual(
+      duplicates,
+      [],
+      `ids dupliqués dans le DOM : ${duplicates.join(', ') || 'aucun'}`
+    );
+
+    await view.unmount();
+  });
+
+  it('chaque dialogue est étiqueté par SON propre titre', async () => {
+    reset();
+    const view = await render(
+      h('div', null, [
+        h(Modal, {
+          key: 'm1',
+          open: true,
+          onClose: () => {},
+          title: 'Premier titre',
+          children: h('p', null, 'contenu')
+        }),
+        h(Modal, {
+          key: 'm2',
+          open: true,
+          onClose: () => {},
+          title: 'Second titre',
+          children: h('p', null, 'contenu')
+        }),
+        h(ConfirmDialog, {
+          key: 'c1',
+          open: true,
+          title: 'Troisième titre',
+          description: 'Une opération.',
+          confirmLabel: 'Valider',
+          onConfirm: () => {},
+          onCancel: () => {}
+        }),
+        h(ConfirmDialog, {
+          key: 'c2',
+          open: true,
+          title: 'Quatrième titre',
+          description: 'Une autre opération.',
+          confirmLabel: 'Supprimer',
+          onConfirm: () => {},
+          onCancel: () => {}
+        })
+      ])
+    );
+
+    const dialogs = Array.from(view.container.querySelectorAll('[role="dialog"]'));
+    assert.equal(dialogs.length, 4, 'les quatre dialogues sont rendus');
+
+    for (const dialog of dialogs) {
+      const labelId = dialog.getAttribute('aria-labelledby');
+      const label = view.container.querySelector(`#${labelId}`);
+      assert.ok(label, `l'id « ${labelId} » doit exister`);
+      // Le titre étiquetant doit être à l'intérieur du dialogue qu'il étiquette.
+      assert.ok(
+        dialog.contains(label),
+        `« ${label.textContent} » étiquette un dialogue qui ne le contient pas`
+      );
+    }
+
+    const titles = dialogs.map((d) => {
+      const label = view.container.querySelector(`#${d.getAttribute('aria-labelledby')}`);
+      return label.textContent;
+    });
+    assert.deepEqual(
+      titles.sort(),
+      ['Premier titre', 'Quatrième titre', 'Second titre', 'Troisième titre'].sort(),
+      'chaque dialogue annonce son propre titre'
+    );
+
+    await view.unmount();
+  });
+
+  it('le bouton de fermeture porte un vrai symbole, pas un span vide', async () => {
+    reset();
+    const view = await render(
+      h(Modal, {
+        open: true,
+        onClose: () => {},
+        title: 'Titre',
+        children: h('p', null, 'contenu')
+      })
+    );
+
+    const closeButton = view.container.querySelector('button[aria-label]');
+    assert.ok(closeButton, 'un bouton de fermeture étiqueté existe');
+
+    const svg = closeButton.querySelector('svg');
+    assert.ok(
+      svg,
+      'la fermeture doit utiliser une icône du jeu, pas un span habillé en CSS'
+    );
+
+    await view.unmount();
+  });
+});
+
+describe('Drawer', () => {
+  it('s’ouvre, se ferme sur Escape et rend le focus', async () => {
+    reset();
+    const calls = [];
+    const view = await render(
+      h(Drawer, {
+        open: true,
+        onClose: () => calls.push('close'),
+        title: 'Panneau latéral',
+        children: h('button', { type: 'button' }, 'action du tiroir')
+      })
+    );
+
+    const dialog = view.container.querySelector('[role="dialog"]');
+    assert.ok(dialog, 'le tiroir est rendu comme un dialog');
+    assert.equal(dialog.getAttribute('aria-modal'), 'true');
+
+    await pressKey('Escape', dom.window.document);
+    assert.deepEqual(calls, ['close'], 'Escape ferme le tiroir');
 
     await view.unmount();
   });

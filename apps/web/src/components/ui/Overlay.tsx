@@ -16,10 +16,11 @@
  * critique, réactivation, changement de permissions.
  */
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useId, useRef } from 'react';
 import type { ReactNode } from 'react';
 
 import { trapFocus, useReturnFocus } from './focus';
+import { Icon } from './Icon';
 
 import styles from './ui.module.css';
 
@@ -119,15 +120,20 @@ type ModalProps = {
 };
 
 export function Modal({ open, onClose, title, children, footer, size = 'md' }: ModalProps) {
+  // `useId` et non un id codé en dur : deux overlays ouverts en même temps
+  // (une confirmation lancée depuis une modale) produisaient des ids DOM
+  // dupliqués, et `aria-labelledby` résolvait vers le mauvais titre.
+  const titleId = useId();
+
   return (
-    <OverlayBase open={open} onClose={onClose} labelledBy="modal-title" variant="modal">
+    <OverlayBase open={open} onClose={onClose} labelledBy={titleId} variant="modal">
       <div className={`${styles.overlayInner} ${styles[`overlaySize${size}`]}`}>
         <header className={styles.overlayHeader}>
-          <h2 id="modal-title" className={styles.overlayTitle}>
+          <h2 id={titleId} className={styles.overlayTitle}>
             {title}
           </h2>
           <button type="button" className={styles.iconButton} onClick={onClose} aria-label="Fermer">
-            <span className={styles.iconClose} aria-hidden="true" />
+            <Icon name="close" size="var(--ctl-icon-sm)" />
           </button>
         </header>
         <div className={styles.overlayBody}>{children}</div>
@@ -149,15 +155,17 @@ type DrawerProps = {
 };
 
 export function Drawer({ open, onClose, title, children, footer, size = 'md' }: DrawerProps) {
+  const titleId = useId();
+
   return (
-    <OverlayBase open={open} onClose={onClose} labelledBy="drawer-title" variant="drawer">
+    <OverlayBase open={open} onClose={onClose} labelledBy={titleId} variant="drawer">
       <div className={`${styles.overlayInner} ${styles[`drawerSize${size}`]}`}>
         <header className={styles.overlayHeader}>
-          <h2 id="drawer-title" className={styles.overlayTitle}>
+          <h2 id={titleId} className={styles.overlayTitle}>
             {title}
           </h2>
           <button type="button" className={styles.iconButton} onClick={onClose} aria-label="Fermer">
-            <span className={styles.iconClose} aria-hidden="true" />
+            <Icon name="close" size="var(--ctl-icon-sm)" />
           </button>
         </header>
         <div className={styles.overlayBody}>{children}</div>
@@ -203,16 +211,19 @@ export function ConfirmDialog({
   destructive = false,
   pending = false
 }: ConfirmDialogProps) {
+  const titleId = useId();
+  const descId = useId();
+
   return (
-    <OverlayBase open={open} onClose={onCancel} labelledBy="confirm-title" describedBy="confirm-desc" variant="modal">
+    <OverlayBase open={open} onClose={onCancel} labelledBy={titleId} describedBy={descId} variant="modal">
       <div className={`${styles.overlayInner} ${styles.overlaySizeSm}`}>
         <header className={styles.overlayHeader}>
-          <h2 id="confirm-title" className={styles.overlayTitle}>
+          <h2 id={titleId} className={styles.overlayTitle}>
             {title}
           </h2>
         </header>
         <div className={styles.overlayBody}>
-          <p id="confirm-desc" className={styles.overlayText}>
+          <p id={descId} className={styles.overlayText}>
             {description}
           </p>
         </div>

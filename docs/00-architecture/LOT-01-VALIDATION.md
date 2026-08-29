@@ -57,7 +57,7 @@ Contrat après lot : **340 variables, 480 déclarations.**
 |---|---|
 | `npm run check:tokens` | **112 paires, pire 4,61:1, 0 échec** (cascade CSS résolue, 2 thèmes) |
 | `npm run check:hardcoded` | **24 fichiers analysés, 0 violation** |
-| `npm test` | **28 tests, 28 passent** (focus + composants, voir §6) |
+| `npm test` | **32 tests, 32 passent** (focus + composants, voir §6) |
 | `npm run typecheck` | exit 0 |
 | `npm run build` | 6 pages prérendues, `/dev/ui` 14,8 kB |
 | `GET /` | HTTP 200 |
@@ -243,7 +243,7 @@ que *grâce* au défaut (voir 6.3). Son comportement réel est couvert en 6.2.
 
 Un loader (`tests/helpers/loader.mjs`, esbuild) permet d'importer les `.tsx` du
 projet et de neutraliser les imports CSS. Les composants sont **rendus pour de
-vrai** dans jsdom via `react-dom/client` + `React.act`, puis pilotés. **13 tests.**
+vrai** dans jsdom via `react-dom/client` + `React.act`, puis pilotés. **17 tests.**
 
 | Composant | Comportement vérifié |
 |---|---|
@@ -295,14 +295,38 @@ pas. Mesuré : `Escape` envoyé sur le `document` laissait le menu ouvert.
 Un manque d'API au passage : le libellé d'annulation de `ConfirmDialog` était
 codé en dur « Annuler ». Ajout d'un `cancelLabel` optionnel, défaut inchangé.
 
+### 6.4 Deux défauts de plus, trouvés en relisant mon propre code
+
+**5. Identifiants DOM codés en dur.** `Modal`, `Drawer` et `ConfirmDialog`
+portaient des ids littéraux (`modal-title`, `drawer-title`, `confirm-title`,
+`confirm-desc`). Deux instances du même composant montées en même temps — une
+confirmation lancée depuis une modale, cas courant — produisaient des ids
+dupliqués. `aria-labelledby` résolvait alors vers le premier, donc vers le titre
+d'un **autre** dialogue.
+→ `useId()` partout. Mesuré avant correction :
+`ids dupliqués : modal-title, confirm-title, confirm-desc`, et le test
+« chaque dialogue est étiqueté par SON propre titre » échouait avec
+« Premier titre étiquette un dialogue qui ne le contient pas ».
+Vérifié aussi sur le HTML servi : **38 id, 0 dupliqué, 0 `for` orphelin**.
+
+**6. Le bouton de fermeture ne dessinait pas une croix.** `Modal` et `Drawer`
+rendaient `<span className={styles.iconClose} />`, et la classe faisait
+`height: var(--sp-0)` + `border-top` + `rotate(45deg)` : **une seule diagonale**,
+pas une croix. Le jeu d'icônes contient pourtant bien un `close`.
+→ `<Icon name="close" />`, classe CSS morte supprimée.
+
+**Une fausse alerte de ma part, à corriger** : j'avais noté que `DatePicker`
+déclarait une `ref` inutilisée. C'est faux — `ref` est bien passée à l'élément
+ligne 311 de `Field.tsx`. Rien à corriger.
+
 **Preuve que les tests ont des dents** : l'ancienne implémentation de
 `getFocusable` a été réinjectée temporairement — **9 tests échouent**. Restaurée,
 tout repasse. Les défauts 2 à 4 ont chacun été observés en échec avant d'être
 corrigés, puis en succès après.
 
-### 6.4 Commande
+### 6.5 Commande
 
-`npm test` — 28 tests, 28 passent. Intégré à `npm run lint`.
+`npm test` — 32 tests, 32 passent. Intégré à `npm run lint`.
 
 ---
 
@@ -317,8 +341,9 @@ corrigés, puis en succès après.
 - **`getComputedStyle` avec résolution de `var()`.** jsdom ne résout pas les
   variables CSS : la cascade reste vérifiée par `scripts/lib/resolve-css.mjs`,
   pas par un moteur de rendu.
-- **`Drawer` et `Toast`** n'ont pas de test propre ; ils passent par la même base
-  d'overlay que `Modal`, qui elle est testée, mais ce n'est pas une preuve.
+- **`Toast`** n'a pas de test propre. `Drawer` en a désormais un (ouverture,
+  `Escape`, `aria-modal`), mais son comportement de feuille plein écran sous
+  720 px n'est pas exercé — il faudrait un vrai viewport.
 
 Chromium n'est pas installable dans cet environnement (téléchargement bloqué, pas
 de root, dépôt Debian injoignable). `@sparticuz/chromium` fournit bien un binaire,
@@ -335,7 +360,7 @@ Ces points restent à reprendre au LOT 23, ou dès qu'un navigateur est disponib
 | Primitives du §2.1 livrées et utilisées par la galerie | fait |
 | États pertinents parmi les 15 obligatoires | 15/15 |
 | Deux thèmes avec bascule | fait, bascule fonctionnelle dans le DOM |
-| `focus-visible` partout, `Escape`, ARIA | **testé** : 28/28, dont le câblage React de Modal, ConfirmDialog, Dropdown |
+| `focus-visible` partout, `Escape`, ARIA | **testé** : 32/32, dont le câblage React de Modal, Drawer, ConfirmDialog, Dropdown |
 | Couleur jamais seule | fait : libellé + icône + forme |
 | ConfirmDialog sur opérations critiques | fait (l. 3237-3252) |
 | EmptyState / ErrorState / PermissionDenied / Offline / Syncing / ModuleUnavailable | fait |

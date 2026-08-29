@@ -518,14 +518,6 @@
   cursor: not-allowed;
 }
 
-.iconClose {
-  display: block;
-  width: var(--ctl-icon-sm);
-  height: var(--sp-0);
-  border-top: var(--bw-thin) solid currentColor;
-  transform: rotate(45deg);
-}
-
 /* ================================ toasts ================================== */
 
 .toastViewport {
