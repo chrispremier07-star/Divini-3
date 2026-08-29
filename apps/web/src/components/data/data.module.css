@@ -1,0 +1,604 @@
+/**
+ * DIVINI exo — composants de données (LOT 03)
+ *
+ * Toutes les valeurs passent par les tokens. Les media queries utilisent des px
+ * littéraux (convention acceptée, cf. ui.module.css), rien d'autre.
+ */
+
+/* ------------------------------- DataPanel -------------------------------- */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--d-card-header);
+  background-color: var(--surface-card);
+  border: var(--bw-thin) solid var(--border-soft);
+  border-radius: var(--r-lg);
+  padding: var(--d-card-header) var(--d-card);
+}
+
+.panelHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--d-field-gap);
+  flex-wrap: wrap;
+}
+
+.panelTitle {
+  font-family: var(--t-card-title-family);
+  font-size: var(--t-card-title-size);
+  font-weight: var(--t-card-title-weight);
+  line-height: var(--t-card-title-lh);
+  letter-spacing: var(--t-card-title-ls);
+  color: var(--text-primary);
+}
+
+.panelSubtitle {
+  font-family: var(--t-caption-family);
+  font-size: var(--t-caption-size);
+  line-height: var(--t-caption-lh);
+  color: var(--text-secondary);
+}
+
+.panelActions {
+  display: flex;
+  gap: var(--ctl-gap-sm);
+}
+
+.panelFooter {
+  border-top: var(--bw-thin) solid var(--border-soft);
+  padding-top: var(--d-field-gap);
+  font-family: var(--t-caption-family);
+  font-size: var(--t-caption-size);
+  color: var(--text-secondary);
+}
+
+/* --------------------------------- KPI ------------------------------------ */
+
+.kpiGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--d-gutter);
+}
+
+.kpiCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--d-field-gap);
+  background-color: var(--surface-card);
+  border: var(--bw-thin) solid var(--border-soft);
+  border-radius: var(--r-lg);
+  padding: var(--d-card-header) var(--d-card);
+  transition: border-color var(--dur-micro-slow) var(--ease-standard);
+}
+
+.kpiCard:hover {
+  border-color: var(--border-default);
+}
+
+.kpiLabel {
+  font-family: var(--t-section-label-family);
+  font-size: var(--t-section-label-size);
+  font-weight: var(--t-section-label-weight);
+  letter-spacing: var(--t-section-label-ls);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.kpiValue {
+  font-family: var(--t-kpi-value-family);
+  font-size: var(--t-kpi-value-size);
+  font-weight: var(--t-kpi-value-weight);
+  line-height: var(--t-kpi-value-lh);
+  letter-spacing: var(--t-kpi-value-ls);
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.kpiMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--ctl-gap-sm);
+  flex-wrap: wrap;
+}
+
+.kpiDelta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--d-button-gap);
+  font-family: var(--t-mono-value-small-family);
+  font-size: var(--t-mono-value-small-size);
+  font-weight: var(--t-mono-value-small-weight);
+}
+
+.kpiDeltaUp { color: var(--text-success); }
+.kpiDeltaDown { color: var(--text-error); }
+.kpiDeltaFlat { color: var(--text-secondary); }
+
+.kpiPeriod {
+  font-family: var(--t-caption-family);
+  font-size: var(--t-caption-size);
+  color: var(--text-secondary);
+}
+
+/* -------------------------------- Chart ----------------------------------- */
+
+.chartWrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--d-field-gap);
+}
+
+.chartSvg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.chartLegend {
+  display: flex;
+  gap: var(--d-gutter);
+  flex-wrap: wrap;
+}
+
+.chartLegendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--d-button-gap);
+  font-family: var(--t-caption-family);
+  font-size: var(--t-caption-size);
+  color: var(--text-secondary);
+}
+
+.chartLegendSwatch {
+  width: var(--sp-3);
+  height: var(--sp-1);
+  border-radius: var(--r-none);
+}
+
+.chartValues {
+  display: none;
+  gap: var(--d-gutter);
+  flex-wrap: wrap;
+}
+
+.chartValueItem {
+  font-family: var(--t-mono-value-small-family);
+  font-size: var(--t-mono-value-small-size);
+  color: var(--text-secondary);
+}
+
+/* -------------------------------- Table ----------------------------------- */
+
+.table {
+  display: flex;
+  flex-direction: column;
+  border: var(--bw-thin) solid var(--border-soft);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  background-color: var(--surface-card);
+}
+
+.tableHead {
+  display: flex;
+  background-color: var(--surface-recessed);
+  border-bottom: var(--bw-thin) solid var(--border-soft);
+}
+
+.tableHeaderCell {
+  font-family: var(--t-table-header-family);
+  font-size: var(--t-table-header-size);
+  font-weight: var(--t-table-header-weight);
+  letter-spacing: var(--t-table-header-ls);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  padding: var(--d-cell-y) var(--d-cell-x);
+  background: none;
+  border: none;
+  text-align: left;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--d-button-gap);
+}
+
+.tableHeaderCell:hover { color: var(--text-primary); }
+
+.tableBody {
+  position: relative;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.tableRow {
+  display: flex;
+  align-items: center;
+  border-bottom: var(--bw-thin) solid var(--border-soft);
+  transition: background-color var(--dur-micro-fast) var(--ease-standard);
+}
+
+.tableRow:last-child { border-bottom: none; }
+
+.tableRow:hover { background-color: var(--surface-raised); }
+
+.tableRowSelected { background-color: var(--accent-soft); }
+.tableRowSelected:hover { background-color: var(--accent-soft); }
+
+.tableCell {
+  padding: var(--d-cell-y) var(--d-cell-x);
+  font-family: var(--t-body-family);
+  font-size: var(--t-body-size);
+  line-height: var(--t-body-lh);
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cellMono {
+  font-family: var(--t-mono-id-family);
+  font-size: var(--t-mono-id-size);
+  font-weight: var(--t-mono-id-weight);
+  letter-spacing: var(--t-mono-id-ls);
+}
+
+.cellSecondary { color: var(--text-secondary); }
+
+.cellLocked {
+  color: var(--text-warning);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--d-button-gap);
+}
+
+/* actions révélées au survol (desktop) */
+.rowActions {
+  display: flex;
+  gap: var(--d-button-gap);
+  opacity: 0;
+  transition: opacity var(--dur-micro-fast) var(--ease-standard);
+}
+
+.tableRow:hover .rowActions,
+.tableRow:focus-within .rowActions {
+  opacity: 1;
+}
+
+/* colonne de sélection */
+.cellCheck {
+  width: var(--sp-6);
+  flex: 0 0 var(--sp-6);
+  display: inline-flex;
+  align-items: center;
+}
+
+/* spacer de virtualisation */
+.tableSpacer {
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+/* ------------------------------- TableStates ------------------------------ */
+
+.tableState {
+  padding: var(--d-section);
+}
+
+/* ------------------------------- Filtres ---------------------------------- */
+
+.filterBar {
+  display: flex;
+  align-items: center;
+  gap: var(--ctl-gap-sm);
+  flex-wrap: wrap;
+  padding: var(--d-field-gap) 0;
+}
+
+.filterTokens {
+  display: flex;
+  gap: var(--d-button-gap);
+  flex-wrap: wrap;
+}
+
+.filterToken {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--d-button-gap);
+  background-color: var(--accent-soft);
+  color: var(--text-accent);
+  border: var(--bw-thin) solid var(--border-default);
+  border-radius: var(--r-sm);
+  padding: var(--d-button-gap) var(--d-button-pad-x);
+  font-family: var(--t-caption-family);
+  font-size: var(--t-caption-size);
+}
+
+.filterToken button {
+  background: none;
+  border: none;
+  color: inherit;
+  display: inline-flex;
+  padding: 0;
+}
+
+/* ------------------------------ Pagination -------------------------------- */
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ctl-gap-sm);
+  padding: var(--d-field-gap) var(--d-cell-x);
+  border-top: var(--bw-thin) solid var(--border-soft);
+}
+
+.paginationInfo {
+  font-family: var(--t-mono-value-small-family);
+  font-size: var(--t-mono-value-small-size);
+  color: var(--text-secondary);
+}
+
+.paginationControls {
+  display: flex;
+  gap: var(--d-button-gap);
+  align-items: center;
+}
+
+/* -------------------------------- BulkBar --------------------------------- */
+
+.bulkBar {
+  display: flex;
+  align-items: center;
+  gap: var(--ctl-gap-sm);
+  background-color: var(--accent-soft);
+  border: var(--bw-thin) solid var(--border-default);
+  border-radius: var(--r-md);
+  padding: var(--d-field-gap) var(--d-card);
+}
+
+.bulkCount {
+  font-family: var(--t-mono-value-small-family);
+  font-size: var(--t-mono-value-small-size);
+  font-weight: var(--t-mono-value-small-weight);
+  color: var(--text-accent);
+}
+
+/* -------------------------------- Kanban ---------------------------------- */
+
+.kanban {
+  --kanban-col: 260px; /* largeur structurelle de colonne, scopée au composant */
+  display: flex;
+  gap: var(--d-gutter);
+  overflow-x: auto;
+}
+
+.kanbanColumn {
+  flex: 0 0 var(--kanban-col);
+  display: flex;
+  flex-direction: column;
+  gap: var(--d-field-gap);
+  background-color: var(--surface-card);
+  border: var(--bw-thin) solid var(--border-soft);
+  border-radius: var(--r-lg);
+  padding: var(--d-card-header);
+  transition: background-color var(--dur-state-fast) var(--ease-standard);
+}
+
+.kanbanColumnOver {
+  background-color: var(--accent-soft);
+  border-color: var(--border-default);
+}
+
+.kanbanColumnTitle {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: var(--t-section-label-family);
+  font-size: var(--t-section-label-size);
+  font-weight: var(--t-section-label-weight);
+  letter-spacing: var(--t-section-label-ls);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.kanbanCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--d-button-gap);
+  background-color: var(--surface-raised);
+  border: var(--bw-thin) solid var(--border-soft);
+  border-radius: var(--r-lg);
+  padding: var(--d-card-header) var(--d-card);
+  cursor: grab;
+  transition: border-color var(--dur-micro-fast) var(--ease-standard);
+}
+
+.kanbanCard:active { cursor: grabbing; }
+.kanbanCard:hover { border-color: var(--border-default); }
+
+.kanbanCardDragging { opacity: 0.5; }
+
+/* -------------------------------- Timeline -------------------------------- */
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+}
+
+.timelineItem {
+  position: relative;
+  display: flex;
+  gap: var(--d-card);
+  padding-bottom: var(--d-section);
+}
+
+.timelineItem::before {
+  content: '';
+  position: absolute;
+  left: calc(var(--sp-2) - var(--bw-thin));
+  top: var(--sp-4);
+  bottom: 0;
+  width: var(--bw-thin);
+  background-color: var(--border-soft);
+}
+
+.timelineItem:last-child::before { display: none; }
+
+.timelineDot {
+  flex: 0 0 var(--sp-4);
+  width: var(--sp-4);
+  height: var(--sp-4);
+  border-radius: var(--r-max);
+  margin-top: var(--d-button-gap);
+  position: relative;
+  z-index: var(--z-base);
+}
+
+.timelineContent { flex: 1; }
+
+.timelineTitle {
+  font-family: var(--t-body-family);
+  font-size: var(--t-body-size);
+  font-weight: var(--t-body-weight);
+  color: var(--text-primary);
+}
+
+.timelineMeta {
+  font-family: var(--t-caption-family);
+  font-size: var(--t-caption-size);
+  color: var(--text-secondary);
+}
+
+/* ------------------------------ ActivityFeed ------------------------------ */
+
+.activity { display: flex; flex-direction: column; gap: var(--d-field-gap); }
+
+.activityItem {
+  display: flex;
+  gap: var(--d-card);
+  align-items: flex-start;
+  padding: var(--d-field-gap) var(--d-card);
+  border: var(--bw-thin) solid var(--border-soft);
+  border-radius: var(--r-md);
+}
+
+.activityIcon {
+  flex: 0 0 var(--sp-6);
+  width: var(--sp-6);
+  height: var(--sp-6);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-md);
+}
+
+.activityText { flex: 1; font-family: var(--t-body-small-family); font-size: var(--t-body-small-size); line-height: var(--t-body-small-lh); color: var(--text-primary); }
+.activityTime {
+  font-family: var(--t-mono-value-small-family);
+  font-size: var(--t-mono-value-small-size);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+/* -------------------------------- Progress -------------------------------- */
+
+.progressTrack {
+  height: var(--sp-2);
+  border-radius: var(--r-max);
+  background-color: var(--surface-recessed);
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: var(--r-max);
+  transition: width var(--dur-state) var(--ease-standard);
+}
+
+.progressLabel {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--d-field-gap);
+  font-family: var(--t-caption-family);
+  font-size: var(--t-caption-size);
+  color: var(--text-secondary);
+}
+
+.progressValue {
+  font-family: var(--t-mono-value-small-family);
+  font-size: var(--t-mono-value-small-size);
+  font-weight: var(--t-mono-value-small-weight);
+}
+
+.progressRing { position: relative; display: inline-flex; }
+
+/* ------------------------------ Mode carte -------------------------------- */
+
+@media (max-width: 720px) {
+  .kpiGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .kanban { flex-direction: column; overflow-x: visible; }
+  .kanbanColumn { flex: 1 1 auto; }
+
+  .tableHead { display: none; }
+  .tableRow {
+    flex-direction: column;
+    align-items: stretch;
+    padding: var(--d-card-header) var(--d-card);
+    gap: var(--d-button-gap);
+  }
+  .tableCell { white-space: normal; overflow: visible; text-overflow: clip; }
+  .rowActions { opacity: 1; }
+}
+
+@media (min-width: 721px) and (max-width: 980px) {
+  .kpiGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (min-width: 981px) and (max-width: 1280px) {
+  .kpiGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (min-width: 1560px) {
+  .kpiGrid { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+}
+
+/* --------------------------- Reveal graphique ----------------------------- */
+
+.chartLine {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: data-chart-line var(--dur-progress) var(--ease-standard) forwards;
+}
+
+.chartArea {
+  opacity: 0;
+  animation: data-chart-area var(--dur-state-slow) var(--ease-standard) forwards;
+}
+
+@keyframes data-chart-line {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes data-chart-area {
+  to { opacity: 1; }
+}
+
+/* --------------------------- Reduced motion ------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .tableRow, .kpiCard, .kanbanCard, .kanbanColumn, .progressFill, .rowActions {
+    transition: none;
+  }
+  .chartLine {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+  .chartArea {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+@media (max-width: 720px) {
+  .chartValues { display: flex; }
+}
