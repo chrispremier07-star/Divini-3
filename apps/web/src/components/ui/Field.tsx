@@ -442,26 +442,40 @@ type RadioGroupProps = {
 };
 
 export function RadioGroup({ name, legend, options, value, onChange }: RadioGroupProps) {
+  /**
+   * Les id sont dérivés de `useId`, pas du seul `name`.
+   *
+   * Deux groupes partageant un même `name` — deux formulaires sur une page,
+   * une modale au-dessus d'un écran — produisaient des id DOM dupliqués et
+   * chaque `label` pointait vers la mauvaise radio. Même schéma que le défaut
+   * corrigé dans `Overlay.tsx`. `name` reste celui fourni : c'est lui qui
+   * groupe nativement les radios.
+   */
+  const groupId = useId();
+
   return (
     <fieldset className={styles.radioGroup}>
       <legend className={styles.fieldLabel}>{legend}</legend>
-      {options.map((o) => (
-        <span key={o.value} className={styles.checkRow}>
-          <input
-            type="radio"
-            name={name}
-            id={`${name}-${o.value}`}
-            className={styles.checkboxInput}
-            checked={value === o.value}
-            disabled={o.disabled}
-            onChange={() => onChange(o.value)}
-          />
-          <span className={styles.radioDot} aria-hidden="true" />
-          <label htmlFor={`${name}-${o.value}`} className={styles.checkLabel}>
-            {o.label}
-          </label>
-        </span>
-      ))}
+      {options.map((o) => {
+        const optionId = `${groupId}-${o.value}`;
+        return (
+          <span key={o.value} className={styles.checkRow}>
+            <input
+              type="radio"
+              name={name}
+              id={optionId}
+              className={styles.checkboxInput}
+              checked={value === o.value}
+              disabled={o.disabled}
+              onChange={() => onChange(o.value)}
+            />
+            <span className={styles.radioDot} aria-hidden="true" />
+            <label htmlFor={optionId} className={styles.checkLabel}>
+              {o.label}
+            </label>
+          </span>
+        );
+      })}
     </fieldset>
   );
 }

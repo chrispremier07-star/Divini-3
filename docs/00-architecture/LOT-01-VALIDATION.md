@@ -57,7 +57,7 @@ Contrat après lot : **340 variables, 480 déclarations.**
 |---|---|
 | `npm run check:tokens` | **112 paires, pire 4,61:1, 0 échec** (cascade CSS résolue, 2 thèmes) |
 | `npm run check:hardcoded` | **24 fichiers analysés, 0 violation** |
-| `npm test` | **42 tests, 42 passent** (focus, overlays, menus, toasts — voir §6) |
+| `npm test` | **59 tests, 59 passent** (focus, overlays, menus, toasts, formulaires — §6) |
 | `npm run typecheck` | exit 0 |
 | `npm run build` | 6 pages prérendues, `/dev/ui` 14,8 kB |
 | `GET /` | HTTP 200 |
@@ -347,9 +347,41 @@ ignore cette valeur et reste affiché », mais le code faisait
 même pour le ton critique. Une alerte critique qui s'efface seule est un défaut,
 pas une commodité. → `critical` force `duration` à 0.
 
-### 6.6 Commande
+### 6.6 Formulaires — `tests/fields.test.mjs`
 
-`npm test` — 42 tests, 42 passent. Intégré à `npm run lint`.
+Les primitives les plus exposées en accessibilité, rendues pour de vrai.
+**17 tests.**
+
+| Primitive | Vérification |
+|---|---|
+| `FieldGroup` | `for` du label = `id` du contrôle |
+| `FieldGroup` | aide annoncée via `aria-describedby` |
+| `FieldGroup` | l'erreur prime sur l'aide, est rendue en `role="alert"`, et l'aide disparaît |
+| `FieldGroup` | marqueur obligatoire `aria-hidden` |
+| `FieldGroup` | 3 groupes montés → 0 id dupliqué |
+| `Checkbox` | libellé associé, `aria-checked` |
+| `Checkbox` | état mixte : `aria-checked="mixed"` **et** `indeterminate` natif posé |
+| `Switch` | `role="switch"`, `aria-checked`, libellé associé |
+| `RadioGroup` | `fieldset`/`legend`, chaque radio étiquetée, option indisponible désactivée et non masquée |
+| `RadioGroup` | `onChange` reçoit la valeur cliquée |
+| `RadioGroup` | deux groupes de même `name` → 0 id dupliqué |
+| `Select` | hérite de l'`id` et de la description du groupe |
+| `Search` | bouton d'effacement étiqueté, `onClear` appelé |
+| `Stepper` | étapes futures verrouillées, passées atteignables, `aria-current="step"` |
+| `Stepper` | `onGoTo` reçoit l'index visé |
+| `Stepper` | indicateur condensé exact (`3/4` pour l'index 2) |
+
+**8e défaut trouvé.** `RadioGroup` construisait ses id à partir du seul `name`
+(`id={`${name}-${value}`}`). Deux groupes partageant un nom — deux formulaires
+sur une page, une modale au-dessus d'un écran — produisaient des id dupliqués,
+et chaque `label` pointait vers la mauvaise radio. Même schéma que le défaut 5.
+Mesuré avant correction : `id dupliqués : choix-a, choix-b, choix-c`.
+→ id dérivés de `useId()` ; `name` reste celui fourni, c'est lui qui groupe
+nativement les radios.
+
+### 6.7 Commande
+
+`npm test` — 59 tests, 59 passent. Intégré à `npm run lint`.
 
 ---
 
@@ -367,10 +399,12 @@ pas une commodité. → `critical` force `duration` à 0.
 - **Le tiroir en feuille plein écran sous 720 px** n'est pas exercé : `Drawer`
   est testé pour l'ouverture, `Escape` et `aria-modal`, mais pas son
   repositionnement responsive — il faudrait un vrai viewport.
-- **Les primitives de formulaire** (`Input`, `Select`, `Checkbox`, `Switch`,
-  `Stepper`, `FileUpload`) n'ont pas de test propre. Leur contrat ARIA a été
-  vérifié sur le HTML servi (15 champs sur 15 étiquetés, 0 `for` orphelin,
-  `aria-describedby` résolus), pas par des tests d'interaction.
+- **`Input`, `FileUpload` et `DatePicker`** n'ont pas de test d'interaction
+  propre (leur étiquetage est couvert indirectement par les tests
+  `FieldGroup`/`Select`, et le HTML servi confirme 18 `for` pour 18 id, 0
+  orphelin).
+- **La saisie clavier réelle** (frappe, `Tab` entre champs, validation à
+  `Enter`) n'est pas exercée : jsdom ne simule pas la saisie native.
 
 Chromium n'est pas installable dans cet environnement (téléchargement bloqué, pas
 de root, dépôt Debian injoignable). `@sparticuz/chromium` fournit bien un binaire,
@@ -387,7 +421,7 @@ Ces points restent à reprendre au LOT 23, ou dès qu'un navigateur est disponib
 | Primitives du §2.1 livrées et utilisées par la galerie | fait |
 | États pertinents parmi les 15 obligatoires | 15/15 |
 | Deux thèmes avec bascule | fait, bascule fonctionnelle dans le DOM |
-| `focus-visible` partout, `Escape`, ARIA | **testé** : 42/42 — Modal, Drawer, ConfirmDialog, Dropdown, Toast |
+| `focus-visible` partout, `Escape`, ARIA | **testé** : 59/59 — overlays, menus, toasts, formulaires |
 | Couleur jamais seule | fait : libellé + icône + forme |
 | ConfirmDialog sur opérations critiques | fait (l. 3237-3252) |
 | EmptyState / ErrorState / PermissionDenied / Offline / Syncing / ModuleUnavailable | fait |
