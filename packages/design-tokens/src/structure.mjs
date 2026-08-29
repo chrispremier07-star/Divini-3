@@ -9,7 +9,16 @@ export const sidebar = {
   width: '220px',
   widthCollapsed: '72px',
   itemHeight: '38px',
-  itemRadius: 'sm',
+  /**
+   * Référence le token de rayon, pas son nom symbolique.
+   *
+   * La valeur précédente était `'sm'` : émise telle quelle, elle donnait
+   * `--sidebar-item-radius: sm`, et `sm` n'est pas une longueur CSS — toute
+   * déclaration `border-radius: var(--sidebar-item-radius)` aurait été ignorée
+   * par le navigateur. Le garde-fou ajouté dans `build-css.mjs` bloque
+   * désormais ce cas à la génération.
+   */
+  itemRadius: 'var(--r-sm)',
   groupGap: '4px',
   sectionGap: '20px',
   padX: '12px',

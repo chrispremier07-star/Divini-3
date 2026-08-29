@@ -285,6 +285,103 @@ if (dangling.length > 0) {
   process.exit(1);
 }
 
+/**
+ * Garde-fou : un alias symbolique ne doit jamais fuir tel quel dans le CSS.
+ *
+ * Le contrôle ci-dessus attrape les `var(--inexistant)`, pas un mot nu. Or
+ * `toVars` est un passe-plat : `itemRadius: 'sm'` dans `structure.mjs` donnait
+ * `--sidebar-item-radius: sm`, et `sm` n'est pas une longueur CSS — la
+ * déclaration était silencieusement ignorée par le navigateur.
+ *
+ * On ne tente pas de valider tout le vocabulaire CSS (trop de faux positifs :
+ * triplets RGB, piles de polices, nombres sans unité, ombres composées). On
+ * cible exactement le risque : une déclaration dont la valeur entière est un
+ * seul identifiant qui est une clé d'un espace de noms du contrat. Écrire
+ * `'sm'` au lieu de `'var(--r-sm)'` est alors bloqué à la génération.
+ */
+const aliasNamespaces = {
+  '--r-': radius,
+  '--bw-': borderWidth,
+  '--sh-': shadow,
+  '--sp-': space,
+  '--dur-': duration,
+  '--ease-': easing,
+  '--sc-': scale,
+  '--op-': opacity
+};
+
+/**
+ * Mots nus qui sont de vrais mots-clés CSS, et donc légitimes même s'ils
+ * portent le même nom qu'une clé du contrat.
+ *
+ * Sans cette liste, le garde-fou rejetait à tort `--sh-none: none`
+ * (`box-shadow: none`) et `--ease-linear: linear`
+ * (`animation-timing-function: linear`). La collision de noms est réelle mais
+ * bénigne : la valeur émise est correcte.
+ */
+const cssKeywords = new Set([
+  'none',
+  'auto',
+  'inherit',
+  'initial',
+  'unset',
+  'transparent',
+  'currentColor',
+  'normal',
+  'linear',
+  'ease',
+  'ease-in',
+  'ease-out',
+  'ease-in-out'
+]);
+
+const leakedAliases = [];
+for (const m of css.matchAll(/^\s*(--[\w-]+)\s*:\s*([^;]+);/gm)) {
+  const name = m[1];
+  const value = m[2].trim();
+  if (!/^[\w-]+$/.test(value)) continue; // valeur composée : hors périmètre
+  if (cssKeywords.has(value)) continue; // mot-clé CSS légitime
+
+  /**
+   * Un nombre nu est une valeur CSS valide en soi (`line-height: 1`,
+   * `z-index: 0`, `grid-template-columns: 12`, `opacity: 1`) alors que l'échelle
+   * d'espacement a justement `0`, `1`, `12`… comme clés. Sans cette exclusion le
+   * garde-fou rejetait à tort `--lh-none: 1` ou `--z-base: 0`.
+   *
+   * Le risque réel est un MOT symbolique (`sm`, `hairline`, `lg`) : lui n'est
+   * jamais une valeur CSS.
+   */
+  if (/^-?\d+(\.\d+)?$/.test(value)) continue;
+
+  /**
+   * La recherche est volontairement INDÉPENDANTE du préfixe de la variable.
+   *
+   * La première version de ce garde-fou ne testait la collision que si le nom
+   * de la variable commençait par le préfixe de la table (`--r-` pour `radius`).
+   * C'était inopérant : le défaut réel est précisément une fuite VERS une autre
+   * famille — `structure.sidebar.itemRadius` donnait `--sidebar-item-radius: sm`.
+   * Un test négatif (réinjection de `'sm'`) l'a démontré : le build passait.
+   */
+  for (const [prefix, table] of Object.entries(aliasNamespaces)) {
+    if (Object.prototype.hasOwnProperty.call(table, value)) {
+      leakedAliases.push({ name, value, prefix });
+      break;
+    }
+  }
+}
+
+if (leakedAliases.length > 0) {
+  console.error('\nCSS de tokens invalide — alias symboliques émis tels quels :');
+  for (const a of leakedAliases) {
+    console.error(`  ${a.name} : ${a.value}   → écrire 'var(${a.prefix}${a.value})'`);
+  }
+  console.error(
+    '\nUn mot nu n\'est pas une valeur CSS : la déclaration serait ignorée par le navigateur.'
+  );
+  console.error('Corrigez packages/design-tokens/src/ avant de régénérer.\n');
+  process.exit(1);
+}
+
 writeFileSync(join(distDir, 'divini-tokens.css'), css, 'utf8');
 
 /** Types TS dérivés des mêmes objets — pas de duplication manuelle. */
