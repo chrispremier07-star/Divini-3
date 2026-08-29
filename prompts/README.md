@@ -50,7 +50,7 @@ LOT 00 ─┬─► LOT 01 ─┬─► LOT 02 ─┬─► LOT 04 ─┬─► 
 | [00](LOT-00-cadrage-contrat-de-tokens.md) | Cadrage & contrat de tokens | décision artistique (prise) | 01, 22 | **construit — validé provisoirement** |
 | [01](LOT-01-fondations-design-system.md) | Fondations Design System | 00 | 02, 03, 22 | **construit — validé provisoirement** |
 | [02](LOT-02-app-shell.md) | App Shell | 01 | 04, 18, 19, 20, 21 | **construit — validé** |
-| [03](LOT-03-data-feedback.md) | Data & Feedback | 01 | 04, 05, 06, 08, 09, 15 | **construit — en attente de validation** |
+| [03](LOT-03-data-feedback.md) | Data & Feedback | 01 | 04, 05, 06, 08, 09, 15 | **construit — validé** |
 | [04](LOT-04-command-center-notification-center.md) | Command Center + Notification Center | 02, 03 | 05, 13 | non démarré |
 | [05](LOT-05-cockpit.md) | Cockpit | 03, 04 | 06, 09, 14 | non démarré |
 | [06](LOT-06-ventes-commandes.md) | Ventes & Commandes | 03, 05 | 07, 08, 10, 17, 20 | non démarré |
@@ -73,7 +73,7 @@ LOT 00 ─┬─► LOT 01 ─┬─► LOT 02 ─┬─► LOT 04 ─┬─► 
 | [23](LOT-23-personal-erp.md) | Personal ERP | 09 | — | non démarré |
 | [24](LOT-24-consolidation-validation-gate.md) | Consolidation & Validation Gate | tous | passage backend | non démarré |
 
-**Avancement global de la phase frontend : 16 %** — LOT 00, LOT 01 et LOT 02 construits, inspectés et corrigés. LOT 00 et LOT 01 validés provisoirement ; **LOT 02 en attente de validation explicite**. Aucun écran métier n'existe encore : le premier arrive au LOT 05.
+**Avancement global de la phase frontend : 16 %** — LOT 00, LOT 01, LOT 02 et LOT 03 construits, inspectés et corrigés. LOT 00 et LOT 01 validés provisoirement ; **LOT 02 et LOT 03 validés** (4 lots sur 25). Aucun écran métier n'existe encore : le premier arrive au LOT 05.
 
 ## 4. Structure identique de chaque prompt de lot
 

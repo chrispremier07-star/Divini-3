@@ -3,7 +3,7 @@
 **Date :** 2026-08-29
 **Branche :** `arena/01a04ab1-divini-3`
 **Spécification :** `prompts/LOT-03-data-feedback.md`
-**Statut :** construit, inspecté, corrigé — **en attente de validation explicite**
+**Statut :** construit, inspecté, corrigé — **validé par le commanditaire le 2026-08-29**
 
 > Format imposé par `prompts/00-REGLES-COMMUNES.md` §10, complété des éléments du
 > LOT 03 §14 : mesures de fluidité à 50 000 lignes, décision sur la bibliothèque de
@@ -175,12 +175,13 @@ fait pas de layout ; aucun navigateur disponible.
 
 **AVANCEMENT GLOBAL : 16 %**
 
-Lots 00, 01, 02 validés ; **LOT 03 en attente de validation explicite**. Le premier
-écran métier arrive au LOT 05.
+Lots 00, 01, 02 et 03 validés (4 lots sur 25). Le premier écran métier arrive au
+LOT 05.
 
 ---
 
 ## 11. STOP
 
-LOT 03 **construit, inspecté, corrigé**. Conformément à `00-REGLES-COMMUNES.md` §11, je
-m'arrête et **j'attends votre validation explicite** avant le LOT 04.
+LOT 03 **construit, inspecté, corrigé, puis validé par le commanditaire le 2026-08-29**.
+Conformément à `00-REGLES-COMMUNES.md` §11, je m'arrête ici : le LOT 04 (Command Center +
+Notification Center) n'est **pas** démarré et attend un signal explicite.
