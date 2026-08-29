@@ -1257,7 +1257,7 @@ finalisation.
 | # | Décision | Impact | Bloquant pour |
 |---|---|---|---|
 | **C.1** | ✅ **TRANCHÉ le 2026-08-28 — Option A** : corpus verrouillé (dark `#1C2126` + ambre `#F2A93B`, Space Grotesk/Inter/IBM Plex Mono). Aucune palette indigo/violette/ivoire ne sera introduite. | définit tous les tokens | clos |
-| **C.2** | Portée multi-établissement : sélecteur global unique vs préfixe `/etablissements/{id}` dans chaque route | structure de routes et du shell | LOT 02 |
+| **C.2** | ✅ **TRANCHÉ le 2026-08-29 — sélecteur global unique.** La portée vit dans un état de session, pas dans l'URL : `/app/ventes`, pas `/app/etablissements/{id}/ventes`. Trois raisons tirées du corpus : (1) LOT 02 §5 impose une portée « persistante pendant la session », donc portée par la session et non par l'URL ; (2) le blueprint §9 place le sélecteur dans la sidebar comme contrôle global, et §8.1 le répète dans la topbar ; (3) la « consolidation visible » tenant ⇄ établissements (LOT 02 §2.1) n'a pas de sens avec un préfixe par établissement. Résolution de portée isolée dans `lib/scope.ts` pour qu'un préfixe puisse être ajouté plus tard sans refondre les routes. | structure de routes et du shell | clos |
 | **C.3** | Stack d'application (le corpus impose TypeScript + React, l. 2967/6143/6325, mais ne nomme aucun framework) | outillage, routing, build | LOT 00 |
 | **C.4** | Densité par défaut (confortable vs compacte) pour les tables | DataTable, Cockpit | LOT 03 |
 | **C.5** | ✅ **TRANCHÉ le 2026-08-28** : thème **sombre** par défaut à la première connexion ; bascule vers le clair disponible. | thème, onboarding | clos |
@@ -1266,5 +1266,6 @@ finalisation.
 ---
 
 **Fin du document — aucun lot démarré, aucun écran produit, aucun composant écrit.
-Décisions enregistrées : Annexe C.1 (direction artistique = corpus verrouillé) et Annexe C.5
-(thème sombre par défaut). Points encore ouverts : C.2, C.3, C.4, C.6.**
+Décisions enregistrées : Annexe C.1 (direction artistique = corpus verrouillé), C.2
+(portée = sélecteur global unique), C.3 (Next.js App Router), C.4 (densité confortable
+par défaut) et C.5 (thème sombre par défaut). Points encore ouverts : C.6.**

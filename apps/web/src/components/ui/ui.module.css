@@ -125,7 +125,7 @@
   align-items: center;
   justify-content: center;
   gap: var(--ctl-gap-md);
-  padding: 0 var(--ctl-pad-x-md);
+  padding: 0 var(--ctl-pad-xmd);
   height: var(--ctl-height-md);
   border: var(--bw-hairline) solid transparent;
   border-radius: var(--r-sm);
@@ -156,14 +156,14 @@
 
 .sizeSm {
   height: var(--ctl-height-sm);
-  padding: 0 var(--ctl-pad-x-sm);
+  padding: 0 var(--ctl-pad-xsm);
   gap: var(--ctl-gap-sm);
   font-size: var(--fs-sm);
 }
 
 .sizeLg {
   height: var(--ctl-height-lg);
-  padding: 0 var(--ctl-pad-x-lg);
+  padding: 0 var(--ctl-pad-xlg);
   gap: var(--ctl-gap-lg);
   font-size: var(--fs-md);
 }
@@ -486,7 +486,7 @@
   align-items: center;
   gap: var(--ctl-gap-md);
   height: var(--ctl-height-md);
-  padding: 0 var(--ctl-pad-x-md);
+  padding: 0 var(--ctl-pad-xmd);
   border-radius: var(--r-sm);
   font-size: var(--fs-base);
   font-weight: var(--fw-medium);
@@ -1465,7 +1465,7 @@
   align-items: center;
   gap: var(--sp-2);
   min-height: var(--ctl-height-md);
-  padding: 0 var(--ctl-pad-x-md);
+  padding: 0 var(--ctl-pad-xmd);
   color: var(--on-accent);
   background-color: var(--accent);
   border: var(--bw-none);
