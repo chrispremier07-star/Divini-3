@@ -1,0 +1,27 @@
+{
+  "name": "divini-exo",
+  "version": "0.0.0",
+  "private": true,
+  "description": "DIVINI exo — ERP SaaS multi-tenant. Monorepo (phase frontend, lot par lot).",
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "tokens": "npm run build --workspace @divini/design-tokens",
+    "check:tokens": "node scripts/check-contrast.mjs",
+    "check:hardcoded": "node scripts/check-hardcoded.mjs",
+    "check": "npm run check:tokens && npm run check:hardcoded",
+    "dev": "npm run tokens && npm run dev --workspace @divini/web",
+    "build": "npm run tokens && npm run build --workspace @divini/web",
+    "lint": "npm run tokens && npm run check",
+    "typecheck": "npm run typecheck --workspace @divini/web"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  }
+}

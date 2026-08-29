@@ -1,0 +1,390 @@
+/**
+ * DIVINI exo — Styles de la galerie technique /dev/tokens
+ * Aucune valeur en dur : tout provient du contrat de tokens.
+ */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--d-section);
+  width: 100%;
+  max-width: var(--grid-max-width);
+  margin: 0 auto;
+  padding: var(--d-page-pad-y) var(--d-page-pad-x);
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--sp-6);
+  padding-bottom: var(--sp-6);
+  border-bottom: var(--bw-accent) solid var(--border-default);
+}
+
+.eyebrow {
+  margin-bottom: var(--sp-2);
+  color: var(--text-accent);
+  text-transform: uppercase;
+}
+
+.title {
+  font-size: var(--fs-4xl);
+  line-height: var(--lh-tight);
+}
+
+.lede {
+  max-width: 62ch;
+  margin-top: var(--sp-3);
+  color: var(--text-secondary);
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-6);
+}
+
+.controlGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.controlLabel {
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.segmented {
+  display: inline-flex;
+  padding: var(--sp-1);
+  background-color: var(--surface-recessed);
+  border: var(--bw-hairline) solid var(--border-default);
+  border-radius: var(--r-sm);
+}
+
+.segment {
+  min-height: var(--d-button-height);
+  padding: 0 var(--d-button-pad-x);
+  color: var(--text-secondary);
+  border-radius: var(--r-xs);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  transition: background-color var(--dur-micro-fast) var(--ease-standard),
+    color var(--dur-micro-fast) var(--ease-standard);
+}
+
+.segment:hover {
+  color: var(--text-primary);
+}
+
+.segmentActive,
+.segmentActive:hover {
+  color: var(--text-accent);
+  background-color: var(--accent-soft);
+}
+
+.textButton {
+  min-height: var(--d-button-height);
+  padding: 0 var(--d-button-pad-x);
+  color: var(--text-accent);
+  border: var(--bw-hairline) solid var(--border-default);
+  border-radius: var(--r-sm);
+  font-size: var(--fs-sm);
+  transition: background-color var(--dur-micro-fast) var(--ease-standard);
+}
+
+.textButton:hover {
+  background-color: var(--surface-raised);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  scroll-margin-top: var(--sp-8);
+}
+
+.sectionHead {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.sectionTitle {
+  font-size: var(--fs-xl);
+}
+
+.sectionIntro {
+  max-width: 76ch;
+  color: var(--text-secondary);
+}
+
+.subTitle {
+  margin-top: var(--sp-4);
+  color: var(--text-secondary);
+  font-size: var(--fs-md);
+  text-transform: uppercase;
+  letter-spacing: var(--ls-wider);
+}
+
+.statusGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--d-gutter);
+}
+
+.statusCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--d-card);
+  background-color: var(--surface-card);
+  border: var(--bw-hairline) solid var(--border-default);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-sm);
+}
+
+.statusCanonical {
+  border-left: var(--bw-thick) solid var(--state-success);
+}
+
+.statusDerived {
+  border-left: var(--bw-thick) solid var(--accent);
+}
+
+.statusBadge {
+  align-self: flex-start;
+  padding: var(--sp-1) var(--sp-2);
+  color: var(--text-accent);
+  background-color: var(--accent-soft);
+  border-radius: var(--r-xs);
+  text-transform: uppercase;
+}
+
+.statusOrigin {
+  color: var(--text-secondary);
+}
+
+.swatchGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+  gap: var(--d-gutter);
+}
+
+.swatch {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  padding: var(--sp-3);
+  background-color: var(--surface-card);
+  border: var(--bw-hairline) solid var(--border-default);
+  border-radius: var(--r-md);
+}
+
+.swatchChip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--sp-12);
+  border: var(--bw-hairline) solid var(--border-soft);
+  border-radius: var(--r-sm);
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-semibold);
+}
+
+.swatchName {
+  color: var(--text-primary);
+}
+
+.swatchValue,
+.swatchPal {
+  color: var(--text-secondary);
+}
+
+.tableWrap {
+  overflow-x: auto;
+  background-color: var(--surface-card);
+  border: var(--bw-hairline) solid var(--border-default);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-sm);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  padding: var(--d-cell-y) var(--d-cell-x);
+  text-align: left;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  border-bottom: var(--bw-accent) solid var(--border-default);
+}
+
+.table td {
+  height: var(--d-row);
+  padding: var(--d-cell-y) var(--d-cell-x);
+  border-bottom: var(--bw-hairline) solid var(--border-soft);
+  vertical-align: middle;
+}
+
+.table tbody tr {
+  transition: background-color var(--dur-micro-fast) var(--ease-standard);
+}
+
+.table tbody tr:hover {
+  background-color: var(--surface-raised);
+}
+
+.typeSpecimen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--d-card);
+  background-color: var(--surface-card);
+  border: var(--bw-hairline) solid var(--border-default);
+  border-radius: var(--r-lg);
+}
+
+.spaceScale {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--d-card);
+  background-color: var(--surface-card);
+  border: var(--bw-hairline) solid var(--border-default);
+  border-radius: var(--r-lg);
+}
+
+.spaceRow {
+  display: grid;
+  grid-template-columns: 88px 52px 1fr;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.spaceBar {
+  height: var(--sp-3);
+  background-color: var(--accent-soft);
+  border: var(--bw-hairline) solid var(--accent);
+  border-radius: var(--r-xs);
+}
+
+.radiusGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+  gap: var(--d-gutter);
+}
+
+.radiusItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-4);
+  background-color: var(--surface-card);
+  border: var(--bw-hairline) solid var(--border-default);
+}
+
+.radiusBox {
+  width: var(--sp-12);
+  height: var(--sp-12);
+  background-color: var(--accent-soft);
+  border: var(--bw-accent) solid var(--accent);
+}
+
+.shadowGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--d-gutter);
+}
+
+.shadowItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-5);
+  background-color: var(--surface-card);
+  border-radius: var(--r-md);
+}
+
+.shadowBox {
+  width: 100%;
+  height: var(--sp-12);
+  background-color: var(--surface-raised);
+  border-radius: var(--r-sm);
+}
+
+.stateGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(196px, 1fr));
+  gap: var(--d-gutter);
+}
+
+.stateItem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  min-height: var(--d-list-item);
+  padding: var(--sp-4);
+  background-color: var(--surface-card);
+  border: var(--bw-hairline) solid var(--border-default);
+  border-radius: var(--r-md);
+  transition: background-color var(--dur-micro-fast) var(--ease-standard);
+}
+
+.stateItem:hover {
+  background-color: var(--surface-raised);
+}
+
+.stateChip {
+  align-self: flex-start;
+  padding: var(--sp-1) var(--sp-2);
+  color: var(--text-accent);
+  background-color: var(--accent-soft);
+  border-radius: var(--r-xs);
+}
+
+.motionDemo {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: var(--d-card);
+  background-color: var(--surface-card);
+  border: var(--bw-hairline) solid var(--border-default);
+  border-radius: var(--r-lg);
+}
+
+.motionDot {
+  width: var(--sp-5);
+  height: var(--sp-5);
+  background-color: var(--accent);
+  border-radius: var(--r-max);
+  animation: dev-travel var(--dur-progress) var(--ease-standard) infinite alternate;
+}
+
+@keyframes dev-travel {
+  from {
+    transform: translateX(var(--tr-none));
+  }
+
+  to {
+    transform: translateX(var(--sp-16));
+  }
+}
+
+.note {
+  color: var(--text-secondary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motionDot {
+    animation-duration: var(--dur-reveal);
+  }
+}

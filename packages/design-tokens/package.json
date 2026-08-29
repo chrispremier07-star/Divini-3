@@ -1,0 +1,23 @@
+{
+  "name": "@divini/design-tokens",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Contrat de tokens DIVINI exo — source unique de vérité visuelle.",
+  "type": "module",
+  "main": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.mjs"
+    },
+    "./css": "./dist/divini-tokens.css"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "node scripts/build-css.mjs"
+  }
+}

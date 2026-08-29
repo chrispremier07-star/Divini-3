@@ -17,6 +17,7 @@ out/
 
 # Caches
 .cache/
+*.tsbuildinfo
 .eslintcache
 .mypy_cache/
 .ruff_cache/

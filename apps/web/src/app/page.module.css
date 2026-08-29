@@ -1,0 +1,150 @@
+/**
+ * DIVINI exo — Page racine (état des lieux LOT 00)
+ * Aucune valeur en dur : tout provient du contrat de tokens.
+ */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-6);
+  width: 100%;
+  max-width: var(--grid-max-width-narrow);
+  margin: 0 auto;
+  padding: var(--sp-10) var(--d-page-pad-x);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  padding: var(--sp-8);
+  background-color: var(--surface-card);
+  border: var(--bw-hairline) solid var(--border-default);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-sm);
+}
+
+.eyebrow {
+  color: var(--text-accent);
+  text-transform: uppercase;
+}
+
+.title {
+  font-size: var(--fs-3xl);
+  line-height: var(--lh-tight);
+}
+
+.lede {
+  max-width: 62ch;
+  color: var(--text-secondary);
+}
+
+.warning {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-4);
+  background-color: var(--accent-soft);
+  border-left: var(--bw-thick) solid var(--accent);
+  border-radius: var(--r-sm);
+}
+
+.warningTitle {
+  color: var(--text-accent);
+  text-transform: uppercase;
+}
+
+.warningBody {
+  color: var(--text-primary);
+}
+
+.nav {
+  display: flex;
+  gap: var(--sp-3);
+  padding-top: var(--sp-2);
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--d-button-height);
+  padding: 0 var(--d-button-pad-x);
+  color: var(--on-accent);
+  background-color: var(--accent);
+  border-radius: var(--r-sm);
+  font-family: var(--font-body);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-semibold);
+  transition: background-color var(--dur-micro-fast) var(--ease-standard),
+    box-shadow var(--dur-micro-fast) var(--ease-standard);
+}
+
+.link:hover {
+  box-shadow: var(--sh-md);
+}
+
+.link:active {
+  transform: scale(var(--sc-pressed));
+}
+
+.table {
+  padding: var(--sp-6);
+  background-color: var(--surface-card);
+  border: var(--bw-hairline) solid var(--border-default);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-sm);
+  overflow-x: auto;
+}
+
+.caption {
+  margin-bottom: var(--sp-3);
+  text-align: left;
+  color: var(--text-secondary);
+  font-family: var(--t-section-label-family);
+  font-size: var(--t-section-label-size);
+  font-weight: var(--t-section-label-weight);
+  letter-spacing: var(--t-section-label-ls);
+  text-transform: uppercase;
+}
+
+.table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  padding: var(--d-cell-y) var(--d-cell-x);
+  text-align: left;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  border-bottom: var(--bw-accent) solid var(--border-default);
+}
+
+.table td {
+  height: var(--d-row);
+  padding: var(--d-cell-y) var(--d-cell-x);
+  border-bottom: var(--bw-hairline) solid var(--border-soft);
+}
+
+.table tbody tr {
+  transition: background-color var(--dur-micro-fast) var(--ease-standard);
+}
+
+.table tbody tr:hover {
+  background-color: var(--surface-raised);
+}
+
+.table td:first-child {
+  color: var(--text-accent);
+}
+
+.table td:last-child {
+  color: var(--text-secondary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .link,
+  .table tbody tr {
+    transition-duration: var(--dur-micro-fast);
+  }
+}

@@ -1,0 +1,241 @@
+/**
+ * DIVINI exo — Styles de base
+ *
+ * Règle absolue : aucune valeur en dur. Chaque couleur, rayon, ombre, durée,
+ * espacement et taille provient du contrat de tokens (@divini/design-tokens).
+ * Le contrôle `npm run check:hardcoded` échoue sur toute valeur littérale.
+ */
+
+@import '@divini/design-tokens/css';
+
+/* Polices auto-hébergées — aucune requête réseau au démarrage (l. 2292). */
+@import '@fontsource-variable/space-grotesk';
+@import '@fontsource-variable/inter';
+@import '@fontsource/ibm-plex-mono/400.css';
+@import '@fontsource/ibm-plex-mono/500.css';
+@import '@fontsource/ibm-plex-mono/600.css';
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    color-scheme: dark;
+    -webkit-text-size-adjust: none;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background-color: var(--surface-page);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: var(--fs-base);
+    font-weight: var(--fw-regular);
+    line-height: var(--lh-normal);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Le thème clair inverse le schéma de couleurs du navigateur (scrollbars, form controls). */
+  [data-theme='light'] {
+    color-scheme: light;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: var(--fw-semibold);
+    letter-spacing: var(--ls-tight);
+    line-height: var(--lh-snug);
+  }
+
+  p {
+    margin: 0;
+  }
+
+  a {
+    color: var(--text-accent);
+    text-decoration: none;
+  }
+
+  ul,
+  ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  button {
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  code,
+  kbd,
+  samp,
+  pre {
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+  }
+
+  /**
+   * Anneau de focus — jamais supprimé (état `focus-visible` obligatoire, l. 7964).
+   * `:focus:not(:focus-visible)` retire l'anneau à la souris uniquement.
+   */
+  :focus-visible {
+    outline: var(--bw-thin) solid var(--accent);
+    outline-offset: var(--sp-1);
+    border-radius: var(--r-xs);
+  }
+
+  ::selection {
+    background-color: var(--accent-soft);
+    color: var(--text-primary);
+  }
+
+  /** Barre de défilement discrète — ne détourne pas l'attention. */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-default) transparent;
+  }
+}
+
+/**
+ * Utilitaires de rôle typographique.
+ * Chaque classe applique exactement le rôle défini dans le contrat :
+ * famille, taille, graisse, hauteur de ligne et tracking en une fois.
+ */
+@layer utilities {
+  .t-page-title {
+    font-family: var(--t-page-title-family);
+    font-size: var(--t-page-title-size);
+    font-weight: var(--t-page-title-weight);
+    line-height: var(--t-page-title-lh);
+    letter-spacing: var(--t-page-title-ls);
+  }
+
+  .t-section-title {
+    font-family: var(--t-section-title-family);
+    font-size: var(--t-section-title-size);
+    font-weight: var(--t-section-title-weight);
+    line-height: var(--t-section-title-lh);
+    letter-spacing: var(--t-section-title-ls);
+  }
+
+  .t-card-title {
+    font-family: var(--t-card-title-family);
+    font-size: var(--t-card-title-size);
+    font-weight: var(--t-card-title-weight);
+    line-height: var(--t-card-title-lh);
+    letter-spacing: var(--t-card-title-ls);
+  }
+
+  .t-subtitle {
+    font-family: var(--t-subtitle-family);
+    font-size: var(--t-subtitle-size);
+    font-weight: var(--t-subtitle-weight);
+    line-height: var(--t-subtitle-lh);
+    letter-spacing: var(--t-subtitle-ls);
+  }
+
+  .t-body {
+    font-family: var(--t-body-family);
+    font-size: var(--t-body-size);
+    font-weight: var(--t-body-weight);
+    line-height: var(--t-body-lh);
+    letter-spacing: var(--t-body-ls);
+  }
+
+  .t-body-small {
+    font-family: var(--t-body-small-family);
+    font-size: var(--t-body-small-size);
+    font-weight: var(--t-body-small-weight);
+    line-height: var(--t-body-small-lh);
+    letter-spacing: var(--t-body-small-ls);
+  }
+
+  .t-caption {
+    font-family: var(--t-caption-family);
+    font-size: var(--t-caption-size);
+    font-weight: var(--t-caption-weight);
+    line-height: var(--t-caption-lh);
+    letter-spacing: var(--t-caption-ls);
+  }
+
+  .t-label {
+    font-family: var(--t-label-family);
+    font-size: var(--t-label-size);
+    font-weight: var(--t-label-weight);
+    line-height: var(--t-label-lh);
+    letter-spacing: var(--t-label-ls);
+  }
+
+  .t-section-label {
+    font-family: var(--t-section-label-family);
+    font-size: var(--t-section-label-size);
+    font-weight: var(--t-section-label-weight);
+    line-height: var(--t-section-label-lh);
+    letter-spacing: var(--t-section-label-ls);
+  }
+
+  .t-table-header {
+    font-family: var(--t-table-header-family);
+    font-size: var(--t-table-header-size);
+    font-weight: var(--t-table-header-weight);
+    line-height: var(--t-table-header-lh);
+    letter-spacing: var(--t-table-header-ls);
+  }
+
+  .t-kpi-value {
+    font-family: var(--t-kpi-value-family);
+    font-size: var(--t-kpi-value-size);
+    font-weight: var(--t-kpi-value-weight);
+    line-height: var(--t-kpi-value-lh);
+    letter-spacing: var(--t-kpi-value-ls);
+  }
+
+  .t-mono-value {
+    font-family: var(--t-mono-value-family);
+    font-size: var(--t-mono-value-size);
+    font-weight: var(--t-mono-value-weight);
+    line-height: var(--t-mono-value-lh);
+    letter-spacing: var(--t-mono-value-ls);
+  }
+
+  .t-mono-id {
+    font-family: var(--t-mono-id-family);
+    font-size: var(--t-mono-id-size);
+    font-weight: var(--t-mono-id-weight);
+    line-height: var(--t-mono-id-lh);
+    letter-spacing: var(--t-mono-id-ls);
+  }
+
+  .t-mono-value-small {
+    font-family: var(--t-mono-value-small-family);
+    font-size: var(--t-mono-value-small-size);
+    font-weight: var(--t-mono-value-small-weight);
+    line-height: var(--t-mono-value-small-lh);
+    letter-spacing: var(--t-mono-value-small-ls);
+  }
+
+  .t-kpi-value-small {
+    font-family: var(--t-kpi-value-small-family);
+    font-size: var(--t-kpi-value-small-size);
+    font-weight: var(--t-kpi-value-small-weight);
+    line-height: var(--t-kpi-value-small-lh);
+    letter-spacing: var(--t-kpi-value-small-ls);
+  }
+}
