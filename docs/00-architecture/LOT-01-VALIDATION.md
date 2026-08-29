@@ -57,6 +57,7 @@ Contrat après lot : **340 variables, 480 déclarations.**
 |---|---|
 | `npm run check:tokens` | **112 paires, pire 4,61:1, 0 échec** (cascade CSS résolue, 2 thèmes) |
 | `npm run check:hardcoded` | **24 fichiers analysés, 0 violation** |
+| `npm test` | **18 tests, 18 passent** (focus réel, voir §6) |
 | `npm run typecheck` | exit 0 |
 | `npm run build` | 6 pages prérendues, `/dev/ui` 14,8 kB |
 | `GET /` | HTTP 200 |
@@ -208,21 +209,80 @@ défaut du produit :
 
 ---
 
-## 6. Ce qui n'a pas pu être vérifié ici
+## 6. Vérification par tests réels (ajoutée après coup)
 
-- **Interaction clavier réelle.** Le piège à focus, la navigation fléchée des menus,
-  `Escape` et le retour du focus sont écrits et typés, mais Chromium n'est pas
-  installable dans cet environnement : **aucun de ces comportements n'a été exercé
-  dans un vrai navigateur.**
-- **Rendu visuel.** Les valeurs sont vérifiées, le contraste est calculé selon
-  WCAG 2.1, mais je n'ai pas observé les pixels.
+Le §6 initial déclarait le clavier « écrit mais jamais exercé ». Ce n'est plus le
+cas : un banc de test a été mis en place (`node:test` natif + jsdom).
+
+### Ce qui est maintenant exercé
+
+`tests/focus.test.mjs` importe le **vrai** module
+`apps/web/src/components/ui/focus.ts` (Node 22 lit le `.ts` nativement) — pas une
+réimplémentation. **18 tests, 18 passent.**
+
+| Comportement | Couverture |
+|---|---|
+| `getFocusable` — sélection des focusables | disabled, ancre sans href, `tabindex="-1"`, span |
+| `getFocusable` — sous-arbres exclus | `hidden`, `inert`, `aria-hidden="true"` |
+| `trapFocus` — Tab sur le dernier | revient au premier |
+| `trapFocus` — Shift+Tab sur le premier | revient au dernier |
+| `trapFocus` — Tab interne | non intercepté |
+| `trapFocus` — Shift+Tab depuis le conteneur | revient au dernier |
+| `trapFocus` — conteneur vide | absorbé sans exception |
+| `trapFocus` — nettoyage | l'écouteur est bien retiré |
+| `moveFocus` — ArrowDown / ArrowUp | avance, recule, boucle aux deux bouts |
+| `moveFocus` — Home / End | atteint les extrémités |
+| `moveFocus` — touche non reconnue | ne déplace pas le focus |
+| `moveFocus` — élément hors liste | ne provoque rien |
+| `useReturnFocus` — restauration | focus rendu au déclencheur |
+| `useReturnFocus` — élément disparu | aucune exception |
+| `useReturnFocus` — restore sans save | ne vole pas le focus |
+
+### Défaut trouvé par ces tests
+
+`getFocusable` filtrait sur `el.offsetParent !== null`. C'était doublement faux :
+
+- `offsetParent` vaut aussi `null` pour **tout élément en `position: fixed`**, qui
+  n'est pourtant pas invisible — or le tiroir et le voile de fond sont en position
+  fixe. Un élément focusable directement en `fixed` disparaissait donc du piège ;
+- le critère dépendait du layout, donc invérifiable hors navigateur.
+
+**Correction.** On teste ce qui signifie réellement « non focusable » :
+`closest('[hidden], [inert]')`, `closest('[aria-hidden="true"]')`, et
+`display`/`visibility` calculés. Les attributs de sous-arbre portent désormais
+sur tout leur contenu.
+
+**Preuve que les tests ont des dents** : l'ancienne implémentation a été
+réinjectée temporairement — **9 tests sur 18 échouent**. Restaurée : 18/18.
+
+### Commande
+
+`npm test` (intégré à `npm run lint`).
+
+---
+
+## 6bis. Ce qui reste non vérifié
+
+- **Rendu visuel.** Aucun pixel observé. Le contraste est calculé selon WCAG 2.1
+  sur la cascade résolue, ce n'est pas une observation.
 - **Les trois points de rupture.** Les media queries sont écrites (≤ 979,98 px et
   ≤ 719,98 px) ; aucun test de viewport n'a été exécuté.
 - **`prefers-reduced-motion`.** Le bloc existe dans le CSS généré et servi ; son
   effet n'a pas été observé.
+- **Comportement clavier des composants React eux-mêmes.** Les fonctions de focus
+  sont testées, mais leur câblage dans `OverlayBase`, `MenuPanel` et `Dropdown`
+  (le `useEffect` qui pose `Escape`, qui appelle `trapFocus`) n'est pas exercé :
+  il faudrait un rendu React en test, ce qui demande un transform JSX non
+  disponible ici.
+- **`getComputedStyle` avec résolution de `var()`.** jsdom ne résout pas les
+  variables CSS : la cascade reste vérifiée par `scripts/lib/resolve-css.mjs`,
+  pas par un moteur de rendu.
 
-Ce sont les points à reprendre en priorité au LOT 23 (tests) ou dès qu'un
-navigateur est disponible.
+Chromium n'est pas installable dans cet environnement (téléchargement bloqué, pas
+de root, dépôt Debian injoignable). `@sparticuz/chromium` fournit bien un binaire,
+mais il lui manque `libnss3`/`libnspr4` et rien ne permet de les installer ici.
+
+Ces points restent à reprendre au LOT 23, ou dès qu'un navigateur est disponible.
 
 ---
 
@@ -233,7 +293,7 @@ navigateur est disponible.
 | Primitives du §2.1 livrées et utilisées par la galerie | fait |
 | États pertinents parmi les 15 obligatoires | 15/15 |
 | Deux thèmes avec bascule | fait, bascule fonctionnelle dans le DOM |
-| `focus-visible` partout, `Escape`, ARIA | écrit — **non exercé en navigateur** |
+| `focus-visible` partout, `Escape`, ARIA | fonctions de focus **testées (18/18)** ; câblage React non exercé |
 | Couleur jamais seule | fait : libellé + icône + forme |
 | ConfirmDialog sur opérations critiques | fait (l. 3237-3252) |
 | EmptyState / ErrorState / PermissionDenied / Offline / Syncing / ModuleUnavailable | fait |
@@ -243,7 +303,9 @@ navigateur est disponible.
 | Aucune valeur en dur | fait — 24 fichiers, 0 violation |
 | Aucune régression LOT 00 | tokens inchangés sauf ajouts justifiés ; 112 paires toujours à 0 échec |
 
-**Non conforme / en suspens** : les vérifications navigateur du tableau §6.
+**Non conforme / en suspens** : les vérifications restantes du §6bis — rendu
+visuel, points de rupture, `prefers-reduced-motion`, et câblage clavier des
+composants React. Aucun navigateur n'est installable dans cet environnement.
 
 ---
 

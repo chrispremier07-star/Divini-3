@@ -11,10 +11,32 @@
 const FOCUSABLE =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
+/**
+ * Éléments focusables et visibles d'un conteneur.
+ *
+ * La version précédente utilisait `el.offsetParent !== null` comme critère de
+ * visibilité. C'était doublement faux :
+ *   - `offsetParent` vaut aussi `null` pour tout élément en `position: fixed`,
+ *     qui n'est pas invisible pour autant — or le tiroir et le voile de fond
+ *     SONT en position fixe ;
+ *   - le critère dépend du layout, donc inutilisable hors navigateur.
+ *
+ * On teste maintenant ce qui signifie réellement « non focusable » : attributs
+ * `hidden` / `inert`, `aria-hidden="true"`, et display/visibility calculés.
+ */
 export function getFocusable(container: HTMLElement): HTMLElement[] {
-  return Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE)).filter(
-    (el) => el.offsetParent !== null || el === document.activeElement
-  );
+  const view = container.ownerDocument.defaultView;
+  return Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE)).filter((el) => {
+    // `hidden` et `inert` s'appliquent au sous-arbre : on remonte les ancêtres.
+    if (el.closest('[hidden], [inert]') !== null) return false;
+    // Un élément sous un sous-arbre aria-hidden ne doit pas recevoir le focus.
+    if (el.closest('[aria-hidden="true"]') !== null) return false;
+
+    const style = view?.getComputedStyle(el);
+    if (style && (style.display === 'none' || style.visibility === 'hidden')) return false;
+
+    return true;
+  });
 }
 
 /**
