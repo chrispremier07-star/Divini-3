@@ -27,10 +27,15 @@ function prefersReducedMotion(): boolean {
 
 /**
  * Count-up vers `target`. Sans `requestAnimationFrame` (SSR/jsdom) ou avec
- * reduced-motion, renvoie immédiatement la valeur finale.
+ * reduced-motion, la valeur finale est posée dès le premier effet.
+ *
+ * L'état initial vaut TOUJOURS 0 : lire `prefersReducedMotion()` dans
+ * l'initialiseur produirait une divergence serveur/client (le serveur n'a pas
+ * `matchMedia`) et donc une erreur d'hydratation. La branche média se décide
+ * uniquement dans l'effet, côté client, après l'hydratation.
  */
 export function useCountUp(target: number, durationMs = 1150): number {
-  const [display, setDisplay] = useState(() => (prefersReducedMotion() ? target : 0));
+  const [display, setDisplay] = useState(0);
   const started = useRef(false);
 
   useEffect(() => {
