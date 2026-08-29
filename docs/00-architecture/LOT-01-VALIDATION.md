@@ -57,7 +57,7 @@ Contrat après lot : **340 variables, 480 déclarations.**
 |---|---|
 | `npm run check:tokens` | **112 paires, pire 4,61:1, 0 échec** (cascade CSS résolue, 2 thèmes) |
 | `npm run check:hardcoded` | **24 fichiers analysés, 0 violation** |
-| `npm test` | **18 tests, 18 passent** (focus réel, voir §6) |
+| `npm test` | **28 tests, 28 passent** (focus + composants, voir §6) |
 | `npm run typecheck` | exit 0 |
 | `npm run build` | 6 pages prérendues, `/dev/ui` 14,8 kB |
 | `GET /` | HTTP 200 |
@@ -214,16 +214,16 @@ défaut du produit :
 Le §6 initial déclarait le clavier « écrit mais jamais exercé ». Ce n'est plus le
 cas : un banc de test a été mis en place (`node:test` natif + jsdom).
 
-### Ce qui est maintenant exercé
+### 6.1 Fonctions de focus — `tests/focus.test.mjs`
 
-`tests/focus.test.mjs` importe le **vrai** module
-`apps/web/src/components/ui/focus.ts` (Node 22 lit le `.ts` nativement) — pas une
-réimplémentation. **18 tests, 18 passent.**
+Importe le **vrai** module `apps/web/src/components/ui/focus.ts` (Node 22 lit le
+`.ts` nativement) — pas une réimplémentation. **15 tests.**
 
 | Comportement | Couverture |
 |---|---|
 | `getFocusable` — sélection des focusables | disabled, ancre sans href, `tabindex="-1"`, span |
 | `getFocusable` — sous-arbres exclus | `hidden`, `inert`, `aria-hidden="true"` |
+| `getFocusable` — élément en position fixe | retenu (régression gardée) |
 | `trapFocus` — Tab sur le dernier | revient au premier |
 | `trapFocus` — Shift+Tab sur le premier | revient au dernier |
 | `trapFocus` — Tab interne | non intercepté |
@@ -234,30 +234,75 @@ réimplémentation. **18 tests, 18 passent.**
 | `moveFocus` — Home / End | atteint les extrémités |
 | `moveFocus` — touche non reconnue | ne déplace pas le focus |
 | `moveFocus` — élément hors liste | ne provoque rien |
-| `useReturnFocus` — restauration | focus rendu au déclencheur |
-| `useReturnFocus` — élément disparu | aucune exception |
-| `useReturnFocus` — restore sans save | ne vole pas le focus |
 
-### Défaut trouvé par ces tests
+`useReturnFocus` n'est plus testé ici : c'est désormais un vrai hook React,
+l'appeler hors composant est une erreur. Ses trois tests initiaux ne passaient
+que *grâce* au défaut (voir 6.3). Son comportement réel est couvert en 6.2.
 
-`getFocusable` filtrait sur `el.offsetParent !== null`. C'était doublement faux :
+### 6.2 Composants React — `tests/components.test.mjs`
 
-- `offsetParent` vaut aussi `null` pour **tout élément en `position: fixed`**, qui
-  n'est pourtant pas invisible — or le tiroir et le voile de fond sont en position
-  fixe. Un élément focusable directement en `fixed` disparaissait donc du piège ;
-- le critère dépendait du layout, donc invérifiable hors navigateur.
+Un loader (`tests/helpers/loader.mjs`, esbuild) permet d'importer les `.tsx` du
+projet et de neutraliser les imports CSS. Les composants sont **rendus pour de
+vrai** dans jsdom via `react-dom/client` + `React.act`, puis pilotés. **13 tests.**
 
-**Correction.** On teste ce qui signifie réellement « non focusable » :
-`closest('[hidden], [inert]')`, `closest('[aria-hidden="true"]')`, et
-`display`/`visibility` calculés. Les attributs de sous-arbre portent désormais
-sur tout leur contenu.
+| Composant | Comportement vérifié |
+|---|---|
+| `Modal` | rien de rendu quand `open` est faux |
+| `Modal` | `role="dialog"`, `aria-modal`, et **l'id de `aria-labelledby` existe** |
+| `Modal` | `Escape` appelle `onClose` et est intercepté |
+| `Modal` | le focus entre dans le panneau à l'ouverture |
+| `Modal` | défilement verrouillé puis restauré |
+| `Modal` | **un re-rendu du parent ne vole pas le focus** |
+| `Modal` | focus rendu au déclencheur à la fermeture |
+| `ConfirmDialog` | `onConfirm` appelé, libellé explicite respecté |
+| `ConfirmDialog` | `onCancel` appelé depuis l'annulation |
+| `ConfirmDialog` | `Escape` annule — **jamais** ne confirme |
+| `Dropdown` | s'ouvre au clic, `Escape` le referme |
+| `Dropdown` | focus rendu au déclencheur à la fermeture |
+| `Dropdown` | entrée indisponible affichée et marquée, pas masquée |
 
-**Preuve que les tests ont des dents** : l'ancienne implémentation a été
-réinjectée temporairement — **9 tests sur 18 échouent**. Restaurée : 18/18.
+### 6.3 Quatre défauts trouvés par ces tests
 
-### Commande
+**1. `getFocusable` filtrait sur `el.offsetParent !== null`.** Doublement faux :
+`offsetParent` vaut aussi `null` pour **tout élément en `position: fixed`**, qui
+n'est pourtant pas invisible — or le tiroir et le voile de fond sont en position
+fixe. Un élément focusable directement en `fixed` disparaissait donc du piège.
+Et le critère dépendait du layout, donc invérifiable hors navigateur.
+→ Remplacé par `closest('[hidden], [inert]')`, `closest('[aria-hidden="true"]')`,
+et `display`/`visibility` calculés. Les attributs de sous-arbre portent
+désormais sur tout leur contenu.
 
-`npm test` (intégré à `npm run lint`).
+**2. `useReturnFocus` n'était pas un hook.** `saved` était une variable locale,
+recréée à chaque rendu : la référence au déclencheur était perdue dès le premier
+re-rendu. Et l'objet retourné était neuf à chaque rendu, ce qui re-déclenchait
+les effets qui le listaient en dépendance.
+→ `useRef` pour la valeur (survit aux rendus) + `useMemo` sans dépendance pour
+une identité stable.
+
+**3. `OverlayBase` volait le focus de l'utilisateur.** `onClose` figurait dans
+les dépendances de l'effet. Tout parent transmettant une fonction inline
+(`onClose={() => …}` — le cas le plus courant) re-déclenchait l'effet à chaque
+rendu, et l'effet remet le focus sur le premier élément du panneau. Mesuré avant
+correction : après un re-rendu du parent, `activeElement` n'était plus l'élément
+que l'utilisateur venait de focusser.
+→ `onClose` passé par ref ; l'effet ne dépend plus que de `open`.
+
+**4. `Escape` ne fermait pas un menu dont le focus était sorti.** Le gestionnaire
+était sur le `onKeyDown` du panneau : les événements remontent, ils ne descendent
+pas. Mesuré : `Escape` envoyé sur le `document` laissait le menu ouvert.
+→ Écoute au niveau du `document`, comme le faisait déjà `OverlayBase`.
+
+Un manque d'API au passage : le libellé d'annulation de `ConfirmDialog` était
+codé en dur « Annuler ». Ajout d'un `cancelLabel` optionnel, défaut inchangé.
+
+**Preuve que les tests ont des dents** : l'ancienne implémentation de
+`getFocusable` a été réinjectée temporairement — **9 tests échouent**. Restaurée,
+tout repasse. Les défauts 2 à 4 ont chacun été observés en échec avant d'être
+corrigés, puis en succès après.
+
+### 6.4 Commande
+
+`npm test` — 28 tests, 28 passent. Intégré à `npm run lint`.
 
 ---
 
@@ -269,14 +314,11 @@ réinjectée temporairement — **9 tests sur 18 échouent**. Restaurée : 18/18
   ≤ 719,98 px) ; aucun test de viewport n'a été exécuté.
 - **`prefers-reduced-motion`.** Le bloc existe dans le CSS généré et servi ; son
   effet n'a pas été observé.
-- **Comportement clavier des composants React eux-mêmes.** Les fonctions de focus
-  sont testées, mais leur câblage dans `OverlayBase`, `MenuPanel` et `Dropdown`
-  (le `useEffect` qui pose `Escape`, qui appelle `trapFocus`) n'est pas exercé :
-  il faudrait un rendu React en test, ce qui demande un transform JSX non
-  disponible ici.
 - **`getComputedStyle` avec résolution de `var()`.** jsdom ne résout pas les
   variables CSS : la cascade reste vérifiée par `scripts/lib/resolve-css.mjs`,
   pas par un moteur de rendu.
+- **`Drawer` et `Toast`** n'ont pas de test propre ; ils passent par la même base
+  d'overlay que `Modal`, qui elle est testée, mais ce n'est pas une preuve.
 
 Chromium n'est pas installable dans cet environnement (téléchargement bloqué, pas
 de root, dépôt Debian injoignable). `@sparticuz/chromium` fournit bien un binaire,
@@ -293,7 +335,7 @@ Ces points restent à reprendre au LOT 23, ou dès qu'un navigateur est disponib
 | Primitives du §2.1 livrées et utilisées par la galerie | fait |
 | États pertinents parmi les 15 obligatoires | 15/15 |
 | Deux thèmes avec bascule | fait, bascule fonctionnelle dans le DOM |
-| `focus-visible` partout, `Escape`, ARIA | fonctions de focus **testées (18/18)** ; câblage React non exercé |
+| `focus-visible` partout, `Escape`, ARIA | **testé** : 28/28, dont le câblage React de Modal, ConfirmDialog, Dropdown |
 | Couleur jamais seule | fait : libellé + icône + forme |
 | ConfirmDialog sur opérations critiques | fait (l. 3237-3252) |
 | EmptyState / ErrorState / PermissionDenied / Offline / Syncing / ModuleUnavailable | fait |

@@ -20,9 +20,10 @@
     "build": "npm run tokens && npm run build --workspace @divini/web",
     "lint": "npm run tokens && npm run check && npm run test",
     "typecheck": "npm run typecheck --workspace @divini/web",
-    "test": "node --test \"tests/**/*.test.mjs\""
+    "test": "node --import ./tests/helpers/register.mjs --test \"tests/**/*.test.mjs\""
   },
   "devDependencies": {
+    "esbuild": "^0.28.2",
     "jsdom": "^30.0.1",
     "typescript": "^5.6.3"
   }

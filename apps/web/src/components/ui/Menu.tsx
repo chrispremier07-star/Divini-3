@@ -84,6 +84,26 @@ function MenuPanel({ items, label, onClose }: MenuBaseProps) {
     const items = Array.from(panel.querySelectorAll<HTMLElement>('[role="menuitem"]'));
     const first = items.find((el) => !el.hasAttribute('aria-disabled')) ?? items[0];
     first?.focus();
+
+    /**
+     * `Escape` doit fermer le menu quel que soit l'élément focusé.
+     *
+     * Le gestionnaire `onKeyDown` du panneau ne reçoit l'événement que si la
+     * touche part de l'intérieur du menu (les événements remontent, ils ne
+     * descendent pas). Dès que le focus était sorti — clic ailleurs, focus sur
+     * le corps — `Escape` ne faisait plus rien. Démontré par
+     * `tests/components.test.mjs`. On écoute donc au niveau du document, comme
+     * le fait déjà `OverlayBase`.
+     */
+    const onDocumentKeydown = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      event.preventDefault();
+      returnFocus.restore();
+      onClose();
+    };
+    document.addEventListener('keydown', onDocumentKeydown);
+
+    return () => document.removeEventListener('keydown', onDocumentKeydown);
   }, []);
 
   const handleKeyDown = useCallback(

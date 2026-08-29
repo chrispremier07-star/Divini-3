@@ -15,12 +15,7 @@
 import { after, before, describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 
-import {
-  getFocusable,
-  moveFocus,
-  trapFocus,
-  useReturnFocus
-} from '../apps/web/src/components/ui/focus.ts';
+import { getFocusable, moveFocus, trapFocus } from '../apps/web/src/components/ui/focus.ts';
 
 import { createDom, makeFocusable, press } from './helpers/dom.mjs';
 
@@ -239,48 +234,13 @@ describe('moveFocus — navigation clavier des menus', () => {
   });
 });
 
-describe('useReturnFocus — le focus revient au déclencheur', () => {
-  it('restaure l’élément qui avait ouvert l’overlay', () => {
-    const c = container();
-    const trigger = dom.window.document.createElement('button');
-    trigger.textContent = 'déclencheur';
-    c.appendChild(trigger);
-    const inner = makeFocusable(2, c);
-
-    trigger.focus();
-    assert.equal(dom.window.document.activeElement, trigger);
-
-    const rf = useReturnFocus();
-    rf.save();
-
-    // L'overlay prend le focus.
-    inner[0].focus();
-    assert.equal(dom.window.document.activeElement, inner[0]);
-
-    rf.restore();
-    assert.equal(dom.window.document.activeElement, trigger, 'focus rendu au déclencheur');
-  });
-
-  it('restore ne lance rien si l’élément a disparu du DOM', () => {
-    const c = container();
-    const trigger = dom.window.document.createElement('button');
-    c.appendChild(trigger);
-    trigger.focus();
-
-    const rf = useReturnFocus();
-    rf.save();
-    trigger.remove();
-
-    assert.doesNotThrow(() => rf.restore());
-  });
-
-  it('un second restore sans save ne vole pas le focus', () => {
-    const c = container();
-    const items = makeFocusable(2, c);
-    items[1].focus();
-
-    const rf = useReturnFocus();
-    rf.restore();
-    assert.equal(dom.window.document.activeElement, items[1], 'focus inchangé');
-  });
-});
+/**
+ * `useReturnFocus` n'est plus testé ici.
+ *
+ * C'est désormais un vrai hook React (`useRef` + `useMemo`) : l'appeler hors
+ * d'un composant est une erreur. Les tests précédents ne passaient que parce
+ * que la fonction était un simple fermeture sans état persistant — c'était
+ * précisément le défaut. Son comportement réel est couvert par
+ * `tests/components.test.mjs` (« rend le focus au déclencheur à la
+ * fermeture » et « ne vole pas le focus quand le parent re-rend »).
+ */

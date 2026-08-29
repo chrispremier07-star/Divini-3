@@ -8,6 +8,8 @@
  * pour qu'aucun overlay n'invente son propre comportement clavier.
  */
 
+import { useMemo, useRef } from 'react';
+
 const FOCUSABLE =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
@@ -84,14 +86,32 @@ export function moveFocus(items: HTMLElement[], current: HTMLElement, key: strin
 
 /** Renvoie le focus à l'élément qui avait ouvert l'overlay. */
 export function useReturnFocus(): { save: () => void; restore: () => void } {
-  let saved: HTMLElement | null = null;
-  return {
-    save: () => {
-      saved = document.activeElement as HTMLElement | null;
-    },
-    restore: () => {
-      if (saved && document.contains(saved)) saved.focus();
-      saved = null;
-    }
-  };
+  /**
+   * Deux défauts corrigés ici, tous deux révélés par `tests/components.test.mjs` :
+   *
+   * 1. `saved` était une variable locale : recréée à CHAQUE rendu, donc la
+   *    référence au déclencheur était perdue dès que le composant re-rendait.
+   *    Elle vit maintenant dans une ref, qui survit aux rendus.
+   *
+   * 2. L'objet retourné était neuf à chaque rendu. Comme il figure dans les
+   *    dépendances des effets de `OverlayBase` et `MenuPanel`, ces effets se
+   *    re-déclenchaient à chaque rendu du parent — et remettaient le focus sur
+   *    le premier élément du panneau, volant le focus de l'utilisateur.
+   *    `useMemo` sans dépendance garantit une identité stable.
+   */
+  const saved = useRef<HTMLElement | null>(null);
+
+  return useMemo(
+    () => ({
+      save: () => {
+        saved.current = document.activeElement as HTMLElement | null;
+      },
+      restore: () => {
+        const element = saved.current;
+        if (element && document.contains(element)) element.focus();
+        saved.current = null;
+      }
+    }),
+    []
+  );
 }

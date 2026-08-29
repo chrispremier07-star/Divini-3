@@ -39,6 +39,20 @@ function OverlayBase({ open, onClose, labelledBy, describedBy, variant, children
   const panelRef = useRef<HTMLDivElement>(null);
   const returnFocus = useReturnFocus();
 
+  /**
+   * `onClose` est passé par ref pour ne PAS figurer dans les dépendances de
+   * l'effet ci-dessous.
+   *
+   * Sans ça, tout parent qui transmet une fonction inline (`onClose={() => …}`)
+   * re-déclenchait l'effet à chaque rendu. L'effet remet le focus sur le premier
+   * élément du panneau : le focus de l'utilisateur était donc volé dès que le
+   * parent re-rendait. Démontré par `tests/components.test.mjs`.
+   */
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
   useEffect(() => {
     if (!open) return;
     returnFocus.save();
@@ -56,7 +70,7 @@ function OverlayBase({ open, onClose, labelledBy, describedBy, variant, children
     const onKeydown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         event.preventDefault();
-        onClose();
+        onCloseRef.current();
       }
     };
     document.addEventListener('keydown', onKeydown);
@@ -71,7 +85,7 @@ function OverlayBase({ open, onClose, labelledBy, describedBy, variant, children
       document.body.style.overflow = previousOverflow;
       returnFocus.restore();
     };
-  }, [open, onClose, returnFocus]);
+  }, [open, returnFocus]);
 
   if (!open) return null;
 
@@ -169,6 +183,8 @@ type ConfirmDialogProps = {
   description: string;
   /** Libellé explicite : « Supprimer le devis », pas « Confirmer ». */
   confirmLabel: string;
+  /** Libellé de l'annulation. « Annuler » par défaut, ajustable au contexte. */
+  cancelLabel?: string;
   onConfirm: () => void;
   /** L'opération est-elle destructive ? Détermine la couleur de l'action. */
   destructive?: boolean;
@@ -182,6 +198,7 @@ export function ConfirmDialog({
   title,
   description,
   confirmLabel,
+  cancelLabel = 'Annuler',
   onConfirm,
   destructive = false,
   pending = false
@@ -201,7 +218,7 @@ export function ConfirmDialog({
         </div>
         <footer className={styles.overlayFooter}>
           <button type="button" className={styles.buttonGhost} onClick={onCancel} disabled={pending}>
-            Annuler
+            {cancelLabel}
           </button>
           <button
             type="button"
