@@ -118,7 +118,17 @@ function ToastViewport({
 }
 
 function ToastItem({ toast, onDismiss }: { toast: ToastRecord; onDismiss: (id: string) => void }) {
-  const duration = toast.duration ?? DEFAULT_DURATION[toast.tone];
+  /**
+   * `critical` ne se ferme jamais tout seul, quelle que soit la durée demandée.
+   *
+   * Le contrat était annoncé dans le commentaire de `ToastInput` mais pas
+   * appliqué : `toast.duration ?? DEFAULT_DURATION[tone]` honorait une durée
+   * explicite même pour le ton critique. Une alerte critique qui s'efface
+   * seule est un défaut, pas une commodité. Démontré par
+   * `tests/toast.test.mjs`.
+   */
+  const duration =
+    toast.tone === 'critical' ? 0 : (toast.duration ?? DEFAULT_DURATION[toast.tone]);
 
   useEffect(() => {
     if (duration <= 0) return;

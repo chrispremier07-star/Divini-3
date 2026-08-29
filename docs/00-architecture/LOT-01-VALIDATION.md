@@ -57,7 +57,7 @@ Contrat après lot : **340 variables, 480 déclarations.**
 |---|---|
 | `npm run check:tokens` | **112 paires, pire 4,61:1, 0 échec** (cascade CSS résolue, 2 thèmes) |
 | `npm run check:hardcoded` | **24 fichiers analysés, 0 violation** |
-| `npm test` | **32 tests, 32 passent** (focus + composants, voir §6) |
+| `npm test` | **42 tests, 42 passent** (focus, overlays, menus, toasts — voir §6) |
 | `npm run typecheck` | exit 0 |
 | `npm run build` | 6 pages prérendues, `/dev/ui` 14,8 kB |
 | `GET /` | HTTP 200 |
@@ -324,9 +324,32 @@ ligne 311 de `Field.tsx`. Rien à corriger.
 tout repasse. Les défauts 2 à 4 ont chacun été observés en échec avant d'être
 corrigés, puis en succès après.
 
-### 6.5 Commande
+### 6.5 Notifications — `tests/toast.test.mjs`
 
-`npm test` — 32 tests, 32 passent. Intégré à `npm run lint`.
+`ToastProvider` / `useToast` rendus pour de vrai, timers réels. **10 tests.**
+
+| Comportement | Vérification |
+|---|---|
+| Région vivante | `aria-live="polite"`, `aria-relevant="additions text"` |
+| Rôle ARIA | `critical` → `alert` ; `info`/`success`/`warning` → `status` |
+| Icône sémantique | 4 tons → **4 icônes distinctes** |
+| Barre de progression | rendue, `animation-duration` égale à la durée du toast, `aria-hidden` |
+| Persistance critique | aucune barre, **et reste affiché** malgré une durée demandée |
+| Auto-fermeture | un toast ordinaire disparaît après sa durée |
+| Sortie | l'élément reste monté le temps de l'animation, puis est retiré |
+| Action | le libellé est respecté, l'action est exécutée, puis fermeture |
+| Fermeture | bouton étiqueté « Fermer la notification » |
+| Hors contexte | `useToast` sans provider lève une erreur nommant `ToastProvider` |
+
+**7e défaut trouvé.** Le commentaire de `ToastInput` annonçait « `critical`
+ignore cette valeur et reste affiché », mais le code faisait
+`toast.duration ?? DEFAULT_DURATION[tone]` : une durée explicite était honorée
+même pour le ton critique. Une alerte critique qui s'efface seule est un défaut,
+pas une commodité. → `critical` force `duration` à 0.
+
+### 6.6 Commande
+
+`npm test` — 42 tests, 42 passent. Intégré à `npm run lint`.
 
 ---
 
@@ -341,9 +364,13 @@ corrigés, puis en succès après.
 - **`getComputedStyle` avec résolution de `var()`.** jsdom ne résout pas les
   variables CSS : la cascade reste vérifiée par `scripts/lib/resolve-css.mjs`,
   pas par un moteur de rendu.
-- **`Toast`** n'a pas de test propre. `Drawer` en a désormais un (ouverture,
-  `Escape`, `aria-modal`), mais son comportement de feuille plein écran sous
-  720 px n'est pas exercé — il faudrait un vrai viewport.
+- **Le tiroir en feuille plein écran sous 720 px** n'est pas exercé : `Drawer`
+  est testé pour l'ouverture, `Escape` et `aria-modal`, mais pas son
+  repositionnement responsive — il faudrait un vrai viewport.
+- **Les primitives de formulaire** (`Input`, `Select`, `Checkbox`, `Switch`,
+  `Stepper`, `FileUpload`) n'ont pas de test propre. Leur contrat ARIA a été
+  vérifié sur le HTML servi (15 champs sur 15 étiquetés, 0 `for` orphelin,
+  `aria-describedby` résolus), pas par des tests d'interaction.
 
 Chromium n'est pas installable dans cet environnement (téléchargement bloqué, pas
 de root, dépôt Debian injoignable). `@sparticuz/chromium` fournit bien un binaire,
@@ -360,7 +387,7 @@ Ces points restent à reprendre au LOT 23, ou dès qu'un navigateur est disponib
 | Primitives du §2.1 livrées et utilisées par la galerie | fait |
 | États pertinents parmi les 15 obligatoires | 15/15 |
 | Deux thèmes avec bascule | fait, bascule fonctionnelle dans le DOM |
-| `focus-visible` partout, `Escape`, ARIA | **testé** : 32/32, dont le câblage React de Modal, Drawer, ConfirmDialog, Dropdown |
+| `focus-visible` partout, `Escape`, ARIA | **testé** : 42/42 — Modal, Drawer, ConfirmDialog, Dropdown, Toast |
 | Couleur jamais seule | fait : libellé + icône + forme |
 | ConfirmDialog sur opérations critiques | fait (l. 3237-3252) |
 | EmptyState / ErrorState / PermissionDenied / Offline / Syncing / ModuleUnavailable | fait |
