@@ -57,7 +57,7 @@ Contrat après lot : **340 variables, 480 déclarations.**
 |---|---|
 | `npm run check:tokens` | **112 paires, pire 4,61:1, 0 échec** (cascade CSS résolue, 2 thèmes) |
 | `npm run check:hardcoded` | **24 fichiers analysés, 0 violation** |
-| `npm test` | **59 tests, 59 passent** (focus, overlays, menus, toasts, formulaires — §6) |
+| `npm test` | **76 tests, 76 passent** (focus, overlays, menus, toasts, formulaires, champs — §6) |
 | `npm run typecheck` | exit 0 |
 | `npm run build` | 6 pages prérendues, `/dev/ui` 14,8 kB |
 | `GET /` | HTTP 200 |
@@ -379,9 +379,41 @@ Mesuré avant correction : `id dupliqués : choix-a, choix-b, choix-c`.
 → id dérivés de `useId()` ; `name` reste celui fourni, c'est lui qui groupe
 nativement les radios.
 
-### 6.7 Commande
+### 6.7 Champs restants — `tests/inputs.test.mjs`
 
-`npm test` — 59 tests, 59 passent. Intégré à `npm run lint`.
+`Input`, `FileUpload` et `DatePicker`, derniers nommés comme non testés.
+**17 tests.**
+
+| Primitive | Vérification |
+|---|---|
+| `Input` | `aria-invalid="true"` si invalide, absent si valide |
+| `Input` | icône et chargeur `aria-hidden`, jamais annoncés |
+| `Input` | `disabled` réellement posé |
+| `Input` | hérite de l'`id` et de la description du groupe |
+| `FileUpload` | bouton « Parcourir » réel à l'état idle, vraie entrée `type="file"` |
+| `FileUpload` | 4 états → 4 intitulés distincts, **aucune progression inventée** |
+| `FileUpload` | « Parcourir » disparaît pendant et après l'opération |
+| `FileUpload` | nom de fichier reçu affiché ; désactivé, il n'ouvre rien |
+| `DatePicker` | déclencheur `aria-haspopup="dialog"`, `aria-expanded`, étiqueté par le groupe |
+| `DatePicker` | ouverture au clic, `aria-expanded` mis à jour |
+| `DatePicker` | sélection d'un jour → date ISO, puis fermeture |
+| `DatePicker` | navigation de mois, **passage d'année** vérifié (décembre 2025) |
+| `DatePicker` | `Escape` ferme depuis l'intérieur du calendrier |
+| `DatePicker` | `Escape` ferme depuis le déclencheur |
+
+**9e défaut trouvé.** `Escape` ne fermait pas le calendrier quand le focus était
+à l'intérieur. Le `onKeyDown` était posé sur le bouton déclencheur, or le
+calendrier en est un **frère**, pas un descendant : les touches partant du
+panneau ne l'atteignaient jamais. Le commentaire du composant annonçait pourtant
+« `Escape` ferme le panneau et rend le focus au champ ». Même famille que le
+défaut 4 (`MenuPanel`). Mesuré avant correction : focus dans le calendrier,
+`Escape` → panneau toujours ouvert.
+→ écoute au niveau du `document` tant que le panneau est ouvert, et focus rendu
+au déclencheur.
+
+### 6.8 Commande
+
+`npm test` — 76 tests, 76 passent. Intégré à `npm run lint`.
 
 ---
 
@@ -399,12 +431,13 @@ nativement les radios.
 - **Le tiroir en feuille plein écran sous 720 px** n'est pas exercé : `Drawer`
   est testé pour l'ouverture, `Escape` et `aria-modal`, mais pas son
   repositionnement responsive — il faudrait un vrai viewport.
-- **`Input`, `FileUpload` et `DatePicker`** n'ont pas de test d'interaction
-  propre (leur étiquetage est couvert indirectement par les tests
-  `FieldGroup`/`Select`, et le HTML servi confirme 18 `for` pour 18 id, 0
-  orphelin).
-- **La saisie clavier réelle** (frappe, `Tab` entre champs, validation à
-  `Enter`) n'est pas exercée : jsdom ne simule pas la saisie native.
+- **La saisie clavier réelle** (frappe au clavier, `Tab` entre champs,
+  validation à `Enter`) n'est pas exercée : jsdom ne simule pas la saisie
+  native, il faut un vrai navigateur.
+- **`Alert`, `Skeleton`, `EmptyState`, `ErrorState`, `PermissionDenied`,
+  `OfflineState`, `SyncingState`, `ModuleUnavailable`** et les primitives
+  d'identité et de typographie n'ont pas de test propre. Ce sont des composants
+  de présentation sans interaction ; leur rendu est vérifié sur le HTML servi.
 
 Chromium n'est pas installable dans cet environnement (téléchargement bloqué, pas
 de root, dépôt Debian injoignable). `@sparticuz/chromium` fournit bien un binaire,
@@ -421,7 +454,7 @@ Ces points restent à reprendre au LOT 23, ou dès qu'un navigateur est disponib
 | Primitives du §2.1 livrées et utilisées par la galerie | fait |
 | États pertinents parmi les 15 obligatoires | 15/15 |
 | Deux thèmes avec bascule | fait, bascule fonctionnelle dans le DOM |
-| `focus-visible` partout, `Escape`, ARIA | **testé** : 59/59 — overlays, menus, toasts, formulaires |
+| `focus-visible` partout, `Escape`, ARIA | **testé** : 76/76 — overlays, menus, toasts, formulaires, calendrier |
 | Couleur jamais seule | fait : libellé + icône + forme |
 | ConfirmDialog sur opérations critiques | fait (l. 3237-3252) |
 | EmptyState / ErrorState / PermissionDenied / Offline / Syncing / ModuleUnavailable | fait |

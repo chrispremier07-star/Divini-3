@@ -14,6 +14,7 @@
 import {
   createContext,
   useContext,
+  useEffect,
   useId,
   useRef,
   useState,
@@ -288,7 +289,29 @@ function toIso(d: Date): string {
 export function DatePicker({ value, onChange, disabled = false, invalid = false }: DatePickerProps) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLSpanElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
   const binding = useFieldBinding();
+
+  /**
+   * `Escape` ferme le panneau quel que soit l'élément focusé, et rend le focus
+   * au champ — ce que le commentaire du composant annonçait déjà.
+   *
+   * Le `onKeyDown` du déclencheur ne suffisait pas : le calendrier est un FRÈRE
+   * du bouton, pas un descendant, donc les touches partant de l'intérieur du
+   * panneau ne l'atteignaient jamais. Même famille que le défaut corrigé dans
+   * `MenuPanel`. Démontré par `tests/inputs.test.mjs`.
+   */
+  useEffect(() => {
+    if (!open) return;
+    const onKeydown = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      event.preventDefault();
+      setOpen(false);
+      triggerRef.current?.focus();
+    };
+    document.addEventListener('keydown', onKeydown);
+    return () => document.removeEventListener('keydown', onKeydown);
+  }, [open]);
   const selected = value ? new Date(`${value}T00:00:00Z`) : null;
   const [view, setView] = useState(() => {
     const base = selected ?? new Date();
@@ -315,6 +338,7 @@ export function DatePicker({ value, onChange, disabled = false, invalid = false 
     >
       <button
         type="button"
+        ref={triggerRef}
         id={binding.id}
         aria-describedby={binding.describedBy}
         className={styles.dateButton}
