@@ -17,17 +17,32 @@ const CSS_STUB =
   'export default new Proxy({}, { get: (_t, key) => (typeof key === "string" ? key : undefined) });';
 
 /**
+ * Next n'est pas importable par Node ESM (résolution webpack). On redirige ses
+ * deux primitives utilisées par les composants vers des stubs de test, pour que
+ * le shell, le Command Center et le Notification Center restent testables.
+ */
+const NEXT_STUBS = {
+  'next/link': new URL('./stubs/next-link.mjs', import.meta.url).href,
+  'next/navigation': new URL('./stubs/next-navigation.mjs', import.meta.url).href
+};
+
+/**
  * Les sources du projet utilisent des imports sans extension (`./Icon`), ce que
  * TypeScript autorise et Node refuse. On complète l'extension à la résolution.
  */
 export async function resolve(specifier, context, nextResolve) {
+  const stub = NEXT_STUBS[specifier];
+  if (stub) return { url: stub, shortCircuit: true };
+
   try {
     return await nextResolve(specifier, context);
   } catch (error) {
     const relative = specifier.startsWith('.') || specifier.startsWith('/');
-    if (error.code !== 'ERR_MODULE_NOT_FOUND' || !relative) throw error;
+    const recoverable =
+      error.code === 'ERR_MODULE_NOT_FOUND' || error.code === 'ERR_UNSUPPORTED_DIR_IMPORT';
+    if (!recoverable || !relative) throw error;
 
-    for (const suffix of ['.tsx', '.ts', '.mjs', '.js', '/index.tsx', '/index.ts']) {
+    for (const suffix of ['.tsx', '.ts', '.mjs', '.js', '/index.tsx', '/index.ts', '/index.mjs']) {
       try {
         return await nextResolve(specifier + suffix, context);
       } catch {

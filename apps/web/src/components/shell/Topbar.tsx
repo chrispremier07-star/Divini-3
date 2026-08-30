@@ -11,79 +11,40 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
-
 import { Icon } from '../ui/Icon';
 import { Button, IconButton } from '../ui/Button';
-import { Modal } from '../ui/Overlay';
 
 import { ConnectionStatus } from './ConnectionStatus';
 import { ScopeSwitcher } from './ScopeSwitcher';
 import { ThemeToggle } from './ThemeToggle';
 
 import { useShellState } from '../../lib/shell-state';
+import { useCommandCenter } from '../command';
+import { NotificationBell } from '../notifications';
 
 import styles from './shell.module.css';
 
 /* ----------------------------- SearchTrigger ------------------------------ */
 
+/**
+ * LOT 04 : le déclencheur ouvre désormais le Command Center réel. Le raccourci
+ * (résolu après montage côté provider, pour éviter toute divergence SSR) est
+ * affiché en IBM Plex Mono ; il ouvre effectivement la palette.
+ */
 export function SearchTrigger() {
-  const [open, setOpen] = useState(false);
-  /**
-   * Le raccourci dépend de la plateforme. Il est résolu après le montage :
-   * le calculer pendant le rendu produirait une divergence d'hydratation entre
-   * le serveur et le client.
-   */
-  const [shortcut, setShortcut] = useState<string | null>(null);
-
-  useEffect(() => {
-    const isMac =
-      typeof navigator !== 'undefined' && /mac|iphone|ipad/i.test(navigator.platform ?? '');
-    setShortcut(isMac ? '⌘K' : 'Ctrl K');
-  }, []);
-
-  useEffect(() => {
-    if (!open) return;
-    const onKeydown = (event: KeyboardEvent) => {
-      // Le raccourci est annoncé : il doit réellement ouvrir le panneau.
-      if (event.key.toLowerCase() === 'k' && (event.metaKey || event.ctrlKey)) {
-        event.preventDefault();
-        setOpen(true);
-      }
-    };
-    window.addEventListener('keydown', onKeydown);
-    return () => window.removeEventListener('keydown', onKeydown);
-  }, [open]);
+  const { openPalette, shortcut } = useCommandCenter();
 
   return (
-    <>
-      <button
-        type="button"
-        className={styles.searchTrigger}
-        onClick={() => setOpen(true)}
-        aria-haspopup="dialog"
-      >
-        <Icon name="search" size="var(--ctl-icon-sm)" />
-        <span className={styles.searchHint}>Rechercher…</span>
-        {shortcut ? <span className={styles.kbd}>{shortcut}</span> : null}
-      </button>
-
-      <Modal
-        open={open}
-        onClose={() => setOpen(false)}
-        title="Command Center"
-        size="sm"
-      >
-        <p>
-          La recherche globale n’est pas encore construite : elle arrive au{' '}
-          <strong>LOT 04 — Command Center</strong>.
-        </p>
-        <p>
-          Ce déclencheur est volontairement un bouton et non un champ de saisie :
-          un champ qui ne chercherait rien serait une fausse promesse.
-        </p>
-      </Modal>
-    </>
+    <button
+      type="button"
+      className={styles.searchTrigger}
+      onClick={openPalette}
+      aria-haspopup="dialog"
+    >
+      <Icon name="search" size="var(--ctl-icon-sm)" />
+      <span className={styles.searchHint}>Rechercher…</span>
+      {shortcut ? <span className={styles.kbd}>{shortcut}</span> : null}
+    </button>
   );
 }
 
@@ -115,6 +76,7 @@ export function Topbar({ primaryAction }: TopbarProps) {
 
       <div className={styles.topbarActions}>
         <ConnectionStatus state={connection} />
+        <NotificationBell />
         <ThemeToggle />
         {primaryAction ? (
           <Button variant="primary" size="sm" onClick={primaryAction.onClick}>

@@ -15,6 +15,9 @@
 import { Drawer } from '../ui/Overlay';
 import { ToastProvider } from '../ui/Toast';
 
+import { CommandCenterProvider } from '../command';
+import { NotificationProvider } from '../notifications';
+
 import { ShellStateProvider, useShellState } from '../../lib/shell-state';
 import { scopeLabel } from '../../lib/scope';
 import { findModule } from '../../lib/modules';
@@ -128,7 +131,11 @@ export function AppShell(props: AppShellProps) {
   return (
     <ShellStateProvider>
       <ToastProvider>
-        <ShellBody {...props} />
+        <NotificationProvider>
+          <CommandCenterProvider>
+            <ShellBody {...props} />
+          </CommandCenterProvider>
+        </NotificationProvider>
       </ToastProvider>
     </ShellStateProvider>
   );

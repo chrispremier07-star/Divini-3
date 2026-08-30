@@ -1,0 +1,120 @@
+/**
+ * DIVINI exo — Préférences de notification · styles. Tokens uniquement.
+ */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
+.head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+
+.title {
+  font-size: var(--fs-xl);
+  line-height: var(--lh-tight);
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+}
+
+.status {
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--r-max);
+  border: var(--bw-hairline) solid var(--border-default);
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+}
+
+.status[data-status='saved'] {
+  color: var(--text-success);
+  border-color: var(--text-success);
+}
+
+.status[data-status='saving'] {
+  color: var(--text-info);
+  border-color: var(--text-info);
+}
+
+.status[data-status='error'] {
+  color: var(--text-critical);
+  border-color: var(--text-critical);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-5);
+}
+
+@media (max-width: 980px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-4);
+  background-color: var(--surface-card);
+  border: var(--bw-hairline) solid var(--border-soft);
+  border-radius: var(--r-lg);
+}
+
+.colTitle {
+  color: var(--text-secondary);
+  font-family: var(--t-section-label-family);
+  font-size: var(--t-section-label-size);
+  font-weight: var(--t-section-label-weight);
+  letter-spacing: var(--t-section-label-ls);
+  text-transform: uppercase;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+.rowNote {
+  color: var(--text-secondary);
+  font-size: var(--fs-xs);
+}
+
+.footer {
+  display: flex;
+}
+
+.reset {
+  min-height: var(--d-button-height);
+  padding: 0 var(--sp-4);
+  border: var(--bw-hairline) solid var(--border-default);
+  border-radius: var(--r-sm);
+  background-color: transparent;
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+}
+
+.reset:hover {
+  color: var(--text-critical);
+  border-color: var(--text-critical);
+}
+
+.reset:focus-visible {
+  outline: var(--bw-thick) solid var(--accent);
+  outline-offset: 2px;
+}

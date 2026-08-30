@@ -1,0 +1,232 @@
+/**
+ * DIVINI exo — Command Center · styles
+ * Corpus l. 7932-7939 : overlay translucide + blur léger, panneau ~560 px centré,
+ * apparition scale + translateY, item actif accent-soft/accent.
+ * Aucune valeur en dur (couleur/espacement/typo/z-index) hors effets non tokénisés.
+ */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-palette);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--sp-10) var(--sp-4) var(--sp-4);
+  background-color: color-mix(in srgb, var(--surface-overlay) 62%, transparent);
+  backdrop-filter: blur(6px);
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 560px;
+  max-height: min(72vh, 640px);
+  background-color: var(--surface-card);
+  border: var(--bw-hairline) solid var(--border-default);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-xl);
+  overflow: hidden;
+  animation: palette-in var(--dur-state-slow) var(--ease-enter);
+}
+
+@keyframes palette-in {
+  from {
+    opacity: 0;
+    transform: scale(var(--sc-pop)) translateY(var(--sp-2));
+  }
+  to {
+    opacity: 1;
+    transform: scale(var(--sc-rest)) translateY(0);
+  }
+}
+
+/* ------------------------------- Saisie ---------------------------------- */
+
+.inputRow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3) var(--sp-4);
+  border-bottom: var(--bw-hairline) solid var(--border-soft);
+}
+
+.inputIcon {
+  color: var(--text-secondary);
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: var(--fs-lg);
+}
+
+.input::placeholder {
+  color: var(--text-secondary);
+}
+
+.input:focus {
+  outline: none;
+}
+
+.kbd {
+  flex: none;
+  padding: 0 var(--sp-2);
+  min-height: var(--sp-5);
+  display: inline-flex;
+  align-items: center;
+  border: var(--bw-hairline) solid var(--border-default);
+  border-radius: var(--r-sm);
+  background-color: var(--surface-recessed);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+}
+
+/* ------------------------------ Résultats -------------------------------- */
+
+.results {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--sp-2);
+}
+
+.group {
+  margin-bottom: var(--sp-2);
+}
+
+.groupTitle {
+  padding: var(--sp-1) var(--sp-2);
+  color: var(--text-secondary);
+  font-family: var(--t-section-label-family);
+  font-size: var(--t-section-label-size);
+  font-weight: var(--t-section-label-weight);
+  letter-spacing: var(--t-section-label-ls);
+  text-transform: uppercase;
+}
+
+.group ul {
+  list-style: none;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  width: 100%;
+  padding: var(--sp-2) var(--sp-2);
+  border: none;
+  border-radius: var(--r-md);
+  background-color: transparent;
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: var(--fs-base);
+  text-align: left;
+  cursor: pointer;
+}
+
+.optionActive {
+  background-color: var(--accent-soft);
+  box-shadow: inset var(--bw-thick) 0 0 var(--accent);
+}
+
+.optionIcon {
+  flex: none;
+  color: var(--text-secondary);
+}
+
+.optionActive .optionIcon {
+  color: var(--text-accent);
+}
+
+.optionLabel {
+  flex: 1;
+  min-width: 0;
+}
+
+.optionLabel mark {
+  background-color: transparent;
+  color: var(--text-accent);
+  font-weight: var(--fw-semibold);
+}
+
+.optionPerm {
+  flex: none;
+  padding: 0 var(--sp-1);
+  border: var(--bw-hairline) solid var(--border-default);
+  border-radius: var(--r-sm);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--fs-micro);
+}
+
+.optionHint {
+  flex: none;
+  color: var(--text-secondary);
+  font-size: var(--fs-xs);
+}
+
+/* --------------------------------- Vide ---------------------------------- */
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-8) var(--sp-4);
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.emptyTitle {
+  color: var(--text-primary);
+  font-weight: var(--fw-medium);
+}
+
+.emptyText {
+  font-size: var(--fs-sm);
+}
+
+/* --------------------------------- Pied ---------------------------------- */
+
+.footer {
+  display: flex;
+  gap: var(--sp-4);
+  padding: var(--sp-2) var(--sp-4);
+  border-top: var(--bw-hairline) solid var(--border-soft);
+}
+
+.footerHint {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  color: var(--text-secondary);
+  font-size: var(--fs-xs);
+}
+
+/* ------------------------------ Responsive ------------------------------- */
+
+@media (max-width: 720px) {
+  .overlay {
+    padding: 0;
+    align-items: stretch;
+  }
+
+  .panel {
+    max-width: none;
+    max-height: none;
+    height: 100%;
+    border-radius: var(--r-none);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel {
+    animation: none;
+  }
+}

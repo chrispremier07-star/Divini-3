@@ -101,6 +101,13 @@ export function useToast(): ToastContextValue {
   return ctx;
 }
 
+/**
+ * LOT 04 §2.2.5 : l'empilement est BORNÉ. Au-delà de la limite, les toasts les
+ * plus anciens restent en file mais ne sont pas tous rendus : un empilement
+ * infini recouvrirait l'interface et nuirait à la lecture.
+ */
+const MAX_VISIBLE_TOASTS = 5;
+
 function ToastViewport({
   toasts,
   onDismiss
@@ -108,9 +115,10 @@ function ToastViewport({
   toasts: ToastRecord[];
   onDismiss: (id: string) => void;
 }) {
+  const visible = toasts.slice(-MAX_VISIBLE_TOASTS);
   return (
     <div className={styles.toastViewport} aria-live="polite" aria-relevant="additions text">
-      {toasts.map((toast) => (
+      {visible.map((toast) => (
         <ToastItem key={toast.id} toast={toast} onDismiss={onDismiss} />
       ))}
     </div>
