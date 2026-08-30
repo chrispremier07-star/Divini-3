@@ -94,8 +94,9 @@ export const MODULES: readonly ModuleDescriptor[] = [
     group: 'operations',
     icon: 'cart',
     permission: 'sales.view',
-    status: 'planifie',
+    status: 'disponible',
     lot: 6,
+    route: '/app/ventes',
     summary: 'Devis, commandes, avoirs et suivi du cycle de vente.'
   },
   {
