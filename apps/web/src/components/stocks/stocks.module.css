@@ -1,0 +1,595 @@
+/**
+ * DIVINI exo — Stocks · styles (LOT 07)
+ *
+ * Tokens uniquement (contrat LOT 00) : aucune couleur, taille ou durée en dur.
+ * Application stricte du Design System : cartes sur --surface-card, bordures
+ * fines, valeurs en --font-mono, sémantique d'état par --state-* / --text-*.
+ */
+
+/* ------------------------------ vue d'ensemble --------------------------- */
+
+.overview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
+.demoBanner {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  border: var(--bw-hairline) solid var(--border-default);
+  border-radius: var(--r-md);
+  background: var(--surface-recessed);
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--sp-4);
+}
+
+@media (max-width: 1280px) {
+  .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 720px) {
+  .cards { grid-template-columns: minmax(0, 1fr); }
+}
+
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: var(--sp-4);
+  align-items: start;
+}
+
+@media (max-width: 980px) {
+  .split { grid-template-columns: minmax(0, 1fr); }
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  border: var(--bw-hairline) solid var(--border-soft);
+  border-radius: var(--r-lg);
+  background: var(--surface-card);
+}
+
+.panelHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+.panelTitle {
+  font-size: var(--fs-base);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+}
+
+.panelHint {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+}
+
+/* --------------------------------- risques ------------------------------- */
+
+.riskList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.riskRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-3);
+  border: var(--bw-hairline) solid var(--border-soft);
+  border-left: var(--bw-thick) solid var(--state-warning);
+  border-radius: var(--r-md);
+  background: var(--surface-recessed);
+}
+
+.riskRow[data-level='critical'] {
+  border-left-color: var(--state-critical);
+}
+
+.riskInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  min-width: 0;
+}
+
+.riskLabel {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.riskMeta {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+}
+
+.riskQty {
+  font-family: var(--font-mono);
+  font-size: var(--fs-base);
+  color: var(--text-primary);
+}
+
+/* ------------------------------ stock dormant ---------------------------- */
+
+.dormantRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: var(--sp-2) 0;
+  border-bottom: var(--bw-hairline) solid var(--border-soft);
+}
+
+.dormantRow:last-child { border-bottom: none; }
+
+.dormantDays {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--text-warning);
+}
+
+/* ------------------------------- entrepôts ------------------------------- */
+
+.warehouseGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-4);
+}
+
+@media (max-width: 720px) {
+  .warehouseGrid { grid-template-columns: minmax(0, 1fr); }
+}
+
+.warehouseCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  border: var(--bw-hairline) solid var(--border-soft);
+  border-radius: var(--r-lg);
+  background: var(--surface-card);
+}
+
+.warehouseHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+.warehouseName {
+  font-size: var(--fs-base);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+}
+
+.warehouseSub {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+}
+
+.locations {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+}
+
+.locationChip {
+  padding: var(--sp-1) var(--sp-2);
+  border: var(--bw-hairline) solid var(--border-soft);
+  border-radius: var(--r-sm);
+  background: var(--surface-recessed);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+}
+
+.capacityValue {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--text-primary);
+}
+
+/* -------------------------------- produits ------------------------------- */
+
+.productGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-4);
+  align-items: start;
+}
+
+@media (max-width: 980px) {
+  .productGrid { grid-template-columns: minmax(0, 1fr); }
+}
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+  border-bottom: var(--bw-hairline) solid var(--border-soft);
+}
+
+.tab {
+  padding: var(--sp-2) var(--sp-3);
+  border: none;
+  border-bottom: var(--bw-thick) solid transparent;
+  background: none;
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+}
+
+.tab[aria-selected='true'] {
+  color: var(--text-primary);
+  border-bottom-color: var(--accent);
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-3);
+}
+
+@media (max-width: 720px) {
+  .infoGrid { grid-template-columns: minmax(0, 1fr); }
+}
+
+.infoItem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.infoLabel {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+}
+
+.infoValue {
+  font-size: var(--fs-sm);
+  color: var(--text-primary);
+}
+
+.infoValueMono {
+  font-family: var(--font-mono);
+}
+
+/* -------------------------------- variantes ------------------------------ */
+
+.variantList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.variantRow {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-3);
+  border: var(--bw-hairline) solid var(--border-soft);
+  border-radius: var(--r-md);
+  background: var(--surface-recessed);
+}
+
+@media (max-width: 720px) {
+  .variantRow { grid-template-columns: 1fr auto; }
+}
+
+.variantAttr {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+}
+
+.variantLabel {
+  font-size: var(--fs-sm);
+  color: var(--text-primary);
+}
+
+.variantStock {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--text-primary);
+}
+
+.variantDelta {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+}
+
+/* --------------------------------- images -------------------------------- */
+
+.imageGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: var(--sp-3);
+}
+
+.imageTile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1 / 1;
+  border: var(--bw-hairline) solid var(--border-soft);
+  border-radius: var(--r-md);
+  background: var(--surface-recessed);
+  color: var(--text-secondary);
+}
+
+.uploadStatus {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+}
+
+/* ------------------------------- catégories ------------------------------ */
+
+.categoryLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--sp-4);
+  align-items: start;
+}
+
+@media (max-width: 980px) {
+  .categoryLayout { grid-template-columns: minmax(0, 1fr); }
+}
+
+.tree {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.treeNode {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  border: var(--bw-hairline) solid transparent;
+  border-radius: var(--r-md);
+  background: none;
+  color: var(--text-primary);
+  font-size: var(--fs-sm);
+  text-align: left;
+  cursor: pointer;
+}
+
+.treeNode[data-depth='1'] { margin-left: var(--sp-5); }
+
+.treeNode[aria-current='true'] {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+
+.treeCount {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+}
+
+.suggestPanel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  border: var(--bw-hairline) solid var(--border-soft);
+  border-radius: var(--r-lg);
+  background: var(--surface-recessed);
+}
+
+.suggestList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.suggestItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-3);
+  border: var(--bw-hairline) solid var(--border-soft);
+  border-radius: var(--r-md);
+  background: var(--surface-card);
+}
+
+.suggestLabel {
+  font-size: var(--fs-sm);
+  color: var(--text-primary);
+}
+
+.suggestActions {
+  display: flex;
+  gap: var(--sp-1);
+}
+
+.suggestNote {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+}
+
+/* ------------------------------- mouvements ------------------------------ */
+
+.movementGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-4);
+  align-items: start;
+}
+
+@media (max-width: 980px) {
+  .movementGrid { grid-template-columns: minmax(0, 1fr); }
+}
+
+.typeSelector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+.typeOption {
+  padding: var(--sp-2) var(--sp-3);
+  border: var(--bw-hairline) solid var(--border-soft);
+  border-radius: var(--r-md);
+  background: var(--surface-recessed);
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+  cursor: pointer;
+}
+
+.typeOption[aria-pressed='true'] {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--text-primary);
+}
+
+.formField {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.fieldError {
+  font-size: var(--fs-xs);
+  color: var(--text-critical);
+}
+
+/* ------------------------------ inventaires ------------------------------ */
+
+.countTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.countTable th,
+.countTable td {
+  padding: var(--sp-2) var(--sp-3);
+  text-align: left;
+  border-bottom: var(--bw-hairline) solid var(--border-soft);
+  font-size: var(--fs-sm);
+}
+
+.countTable th {
+  color: var(--text-secondary);
+  font-weight: var(--fw-medium);
+}
+
+.countNum {
+  font-family: var(--font-mono);
+}
+
+.countInput {
+  width: 100%;
+  max-width: 120px;
+  padding: var(--sp-2);
+  border: var(--bw-hairline) solid var(--border-default);
+  border-radius: var(--r-sm);
+  background: var(--surface-recessed);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+}
+
+.countCards {
+  display: none;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.countCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+  border: var(--bw-hairline) solid var(--border-soft);
+  border-radius: var(--r-md);
+  background: var(--surface-recessed);
+}
+
+@media (max-width: 720px) {
+  .countTableWrap { display: none; }
+  .countCards { display: flex; }
+}
+
+/* -------------------------------- divers --------------------------------- */
+
+.sectionTitle {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+}
+
+.muted {
+  color: var(--text-secondary);
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+.listWrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.detailHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+.detailTitle {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+}
+
+.detailRef {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+}
+
+.detailMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+}

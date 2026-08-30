@@ -105,8 +105,9 @@ export const MODULES: readonly ModuleDescriptor[] = [
     group: 'operations',
     icon: 'package',
     permission: 'inventory.view',
-    status: 'planifie',
+    status: 'disponible',
     lot: 7,
+    route: '/app/stocks',
     summary: 'Niveaux, mouvements, inventaires et seuils de réapprovisionnement.'
   },
   {
