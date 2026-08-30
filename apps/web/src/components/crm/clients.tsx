@@ -20,6 +20,7 @@ import { FieldGroup } from '../ui/Field';
 import { useToast } from '../ui/Toast';
 
 import { ConsentPanel } from './consents';
+import { ClientLoyaltyPanel } from '../loyalty';
 
 import {
   CLIENTS,
@@ -27,7 +28,6 @@ import {
   purchasesOf,
   clientRevenue,
   qualifiesVip,
-  VIP_RULE,
   formatFcfa,
   consentsOf,
   CONSENT_STATUS_META,
@@ -317,28 +317,7 @@ export function ClientDetail({ id }: { id: string }) {
 
       {tab === 'consentements' ? <ConsentPanel clientId={client.id} /> : null}
 
-      {tab === 'fidelite' ? (
-        <div className={styles.panel}>
-          <div className={styles.panelHead}>
-            <span className={styles.panelTitle}>Fidélité</span>
-          </div>
-          <div className={styles.infoGrid}>
-            <div className={styles.infoItem}>
-              <span className={styles.infoLabel}>Solde de points</span>
-              <span className={`${styles.infoValue} ${styles.mono}`}>{client.points}</span>
-            </div>
-            <div className={styles.infoItem}>
-              <span className={styles.infoLabel}>Règle VIP</span>
-              <span className={styles.infoValue}>
-                {VIP_RULE.minPurchases}+ achats ET ≥ {formatFcfa(VIP_RULE.minRevenue)}
-              </span>
-            </div>
-          </div>
-          <p className={styles.hint}>
-            Solde de démonstration — l'attribution réelle des points arrive au LOT 10.
-          </p>
-        </div>
-      ) : null}
+      {tab === 'fidelite' ? <ClientLoyaltyPanel clientId={client.id} /> : null}
     </div>
   );
 }

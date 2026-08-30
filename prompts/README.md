@@ -56,8 +56,8 @@ LOT 00 ─┬─► LOT 01 ─┬─► LOT 02 ─┬─► LOT 04 ─┬─► 
 | [06](LOT-06-ventes-commandes.md) | Ventes & Commandes | 03, 05 | 07, 08, 10, 17, 20 | **construit — validé** |
 | [07](LOT-07-stocks.md) | Stocks | 03, 06 | 11 | **construit — validé** |
 | [08](LOT-08-crm.md) | CRM | 03, 06 | 10, 12 | **construit — validé** |
-| [09](LOT-09-finance.md) | Finance | 03, 05 | 11, 14, 23 | **construit — en attente de validation** |
-| [10](LOT-10-logistique-fidelite.md) | Logistique & Fidélité | 06, 08 | — | non démarré |
+| [09](LOT-09-finance.md) | Finance | 03, 05 | 11, 14, 23 | **construit — validé** |
+| [10](LOT-10-logistique-fidelite.md) | Logistique & Fidélité | 06, 08 | — | **construit** |
 | [11](LOT-11-achats-fournisseurs-rh.md) | Achats, Fournisseurs & RH | 07, 09 | — | non démarré |
 | [12](LOT-12-whatsapp.md) | WhatsApp | 08 | 14 | non démarré |
 | [13](LOT-13-social-media.md) | Social Media | 04 | — | non démarré |
@@ -73,7 +73,7 @@ LOT 00 ─┬─► LOT 01 ─┬─► LOT 02 ─┬─► LOT 04 ─┬─► 
 | [23](LOT-23-personal-erp.md) | Personal ERP | 09 | — | non démarré |
 | [24](LOT-24-consolidation-validation-gate.md) | Consolidation & Validation Gate | tous | passage backend | non démarré |
 
-**Avancement global de la phase frontend : 40 %** — LOT 00 à LOT 09 construits, inspectés et corrigés. LOT 00 et LOT 01 validés provisoirement ; **LOT 02 à LOT 08 validés** ; LOT 09 en attente de validation (10 lots sur 25). Modules métier complets : Ventes (LOT 06), Stocks (LOT 07), CRM (LOT 08), Finance (LOT 09).
+**Avancement global de la phase frontend : 44 %** — LOT 00 à LOT 10 construits, inspectés et corrigés. LOT 00 et LOT 01 validés provisoirement ; **LOT 02 à LOT 09 validés** ; LOT 10 construit, en attente de validation (11 lots sur 25). Modules métier complets : Ventes (LOT 06), Stocks (LOT 07), CRM (LOT 08), Finance (LOT 09), Logistique & Fidélité (LOT 10).
 
 ## 4. Structure identique de chaque prompt de lot
 

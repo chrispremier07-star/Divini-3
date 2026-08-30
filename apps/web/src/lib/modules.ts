@@ -127,8 +127,9 @@ export const MODULES: readonly ModuleDescriptor[] = [
     group: 'operations',
     icon: 'truck',
     permission: 'logistics.view',
-    status: 'planifie',
+    status: 'disponible',
     lot: 10,
+    route: '/app/livraisons',
     summary: 'Expéditions, tournées et preuve de livraison.'
   },
   {
@@ -182,8 +183,9 @@ export const MODULES: readonly ModuleDescriptor[] = [
     group: 'finance',
     icon: 'heart',
     permission: 'loyalty.view',
-    status: 'planifie',
+    status: 'disponible',
     lot: 10,
+    route: '/app/fidelite',
     summary: 'Programmes, cagnottes et avantages clients.'
   },
 
