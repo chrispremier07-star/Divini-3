@@ -1,0 +1,401 @@
+/**
+ * DIVINI exo — CRM · styles (LOT 08)
+ *
+ * Tokens uniquement (contrat LOT 00). Fiche client sobre, consentements en
+ * tableau sémantique, bannière do-not-contact CRITIQUE avec icône + texte,
+ * pipeline en colonnes, page publique épurée sans chrome produit.
+ */
+
+/* --------------------------------- divers -------------------------------- */
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.demoBanner {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  border: var(--bw-hairline) solid var(--border-default);
+  border-radius: var(--r-md);
+  background: var(--surface-recessed);
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+.title {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+}
+
+.hint {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  border: var(--bw-hairline) solid var(--border-soft);
+  border-radius: var(--r-lg);
+  background: var(--surface-card);
+}
+
+.panelHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+.panelTitle {
+  font-size: var(--fs-base);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+}
+
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--sp-4);
+  align-items: start;
+}
+
+@media (max-width: 980px) {
+  .split { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ------------------------------ fiche client ----------------------------- */
+
+.profileHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: var(--sp-4);
+  border: var(--bw-hairline) solid var(--border-soft);
+  border-radius: var(--r-lg);
+  background: var(--surface-card);
+}
+
+.profileIdentity {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+
+.profileName {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+}
+
+.profileMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+}
+
+.profileStats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-5);
+  margin-left: auto;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.statLabel {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+}
+
+.statValue {
+  font-family: var(--font-mono);
+  font-size: var(--fs-base);
+  color: var(--text-primary);
+}
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+  border-bottom: var(--bw-hairline) solid var(--border-soft);
+}
+
+.tab {
+  padding: var(--sp-2) var(--sp-3);
+  border: none;
+  border-bottom: var(--bw-thick) solid transparent;
+  background: none;
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  cursor: pointer;
+}
+
+.tab[aria-selected='true'] {
+  color: var(--text-primary);
+  border-bottom-color: var(--accent);
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-3);
+}
+
+@media (max-width: 720px) {
+  .infoGrid { grid-template-columns: minmax(0, 1fr); }
+}
+
+.infoItem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.infoLabel {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+}
+
+.infoValue {
+  font-size: var(--fs-sm);
+  color: var(--text-primary);
+}
+
+/* --------------------------- do not contact ------------------------------ */
+
+.dncBanner {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  border: var(--bw-hairline) solid var(--border-critical);
+  border-left: var(--bw-thick) solid var(--state-critical);
+  border-radius: var(--r-md);
+  background: var(--surface-recessed);
+  color: var(--text-critical);
+}
+
+.dncText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.dncTitle {
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+}
+
+.dncSub {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+}
+
+/* ----------------------------- consentements ----------------------------- */
+
+.consentTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.consentTable th,
+.consentTable td {
+  padding: var(--sp-2) var(--sp-3);
+  text-align: left;
+  border-bottom: var(--bw-hairline) solid var(--border-soft);
+  font-size: var(--fs-sm);
+  vertical-align: top;
+}
+
+.consentTable th {
+  color: var(--text-secondary);
+  font-weight: var(--fw-medium);
+}
+
+.consentCards {
+  display: none;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.consentCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+  border: var(--bw-hairline) solid var(--border-soft);
+  border-radius: var(--r-md);
+  background: var(--surface-recessed);
+}
+
+@media (max-width: 720px) {
+  .consentTableWrap { display: none; }
+  .consentCards { display: flex; }
+}
+
+.proofRef {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--text-info);
+}
+
+.consentNote {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+}
+
+.separator {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+}
+
+/* ------------------------------- pipeline -------------------------------- */
+
+.pipeline {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(220px, 1fr);
+  gap: var(--sp-3);
+  overflow-x: auto;
+  padding-bottom: var(--sp-2);
+}
+
+@media (max-width: 720px) {
+  .pipeline {
+    grid-auto-flow: row;
+    grid-auto-columns: auto;
+  }
+}
+
+.interestScale {
+  display: flex;
+  gap: var(--sp-1);
+}
+
+.interestDot {
+  width: var(--sp-2);
+  height: var(--sp-2);
+  border-radius: var(--r-max);
+  background: var(--border-default);
+}
+
+.interestDot[data-on='true'] {
+  background: var(--accent);
+}
+
+/* ------------------------------ scénarios -------------------------------- */
+
+.scenarioRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: var(--sp-3);
+  border: var(--bw-hairline) solid var(--border-soft);
+  border-radius: var(--r-md);
+  background: var(--surface-recessed);
+}
+
+.scenarioFlow {
+  font-size: var(--fs-sm);
+  color: var(--text-primary);
+}
+
+.scenarioMeta {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+}
+
+/* ----------------------------- page publique ----------------------------- */
+
+.publicPage {
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--sp-6) var(--sp-4);
+  background: var(--surface-page);
+}
+
+.publicCard {
+  width: 100%;
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  padding: var(--sp-5);
+  border: var(--bw-hairline) solid var(--border-soft);
+  border-radius: var(--r-lg);
+  background: var(--surface-card);
+}
+
+.publicTitle {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+}
+
+.publicText {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+}
+
+.prefRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: var(--sp-3);
+  border: var(--bw-hairline) solid var(--border-soft);
+  border-radius: var(--r-md);
+  background: var(--surface-recessed);
+}
+
+.prefLabel {
+  font-size: var(--fs-sm);
+  color: var(--text-primary);
+}
+
+.prefHint {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+}

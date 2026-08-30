@@ -116,8 +116,9 @@ export const MODULES: readonly ModuleDescriptor[] = [
     group: 'operations',
     icon: 'users',
     permission: 'crm.view',
-    status: 'planifie',
+    status: 'disponible',
     lot: 8,
+    route: '/app/clients',
     summary: 'Prospects, clients, opportunités et historique des échanges.'
   },
   {
