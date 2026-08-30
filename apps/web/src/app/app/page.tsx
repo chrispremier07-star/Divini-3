@@ -1,32 +1,22 @@
 /**
- * DIVINI exo — /app : coquille applicative
+ * DIVINI exo — /app : Cockpit (LOT 05)
  *
- * LOT 02 §3 : la zone de travail est un **EmptyState assumé** jusqu'au LOT 05.
- * Elle annonce ce qui arrivera, lot par lot. Aucun faux dashboard, aucune donnée
- * inventée, aucun chiffre d'entreprise fictif (V2.18).
+ * Le premier écran métier du produit remplace l'EmptyState assumé du LOT 02.
+ * Il répond à « que se passe-t-il aujourd'hui et que dois-je faire ? » sans être
+ * une simple collection de KPI (corpus l. 587-644).
  *
- * Route `/app` et non `/` : la racine reste la page d'état des lieux du LOT 00,
- * la landing publique est le LOT 22.
+ * Les données sont mockées et signalées par le Cockpit lui-même ; aucune page
+ * fictive n'est ouverte : chaque carte mène à une route réelle ou à l'état
+ * « en construction — LOT n ».
  */
 
-import Link from 'next/link';
-
 import { AppShell } from '@/components/shell';
+import { Cockpit } from '@/components/cockpit';
 
 export default function AppPage() {
   return (
     <AppShell>
-      {/*
-        La zone de travail sans module actif est rendue par `WorkspaceLayout` :
-        titre, explication et mention de la session de démonstration. On ne
-        duplique pas ici un contenu qui appartient au shell.
-      */}
-      <p className="t-body">
-        Voir aussi la{' '}
-        <Link href="/dev/shell">route technique du shell</Link>{' '}
-        pour exercer ses variations (sidebar compacte, portées, statuts de
-        module, états de connexion).
-      </p>
+      <Cockpit />
     </AppShell>
   );
 }

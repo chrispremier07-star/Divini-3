@@ -136,12 +136,19 @@ describe('Manifeste de navigation — §13 « 7 groupes max, 5 à 7 entrées »'
 /* ========================================================================== */
 
 describe('Statuts de modules — §13 « explicites, aucun écran fictif »', () => {
-  it('aucun module n\'est marqué disponible : aucun écran n\'existe encore', () => {
+  it('un module disponible porte une route réelle (Cockpit, LOT 05)', () => {
+    // LOT 05 : le Cockpit est le premier écran livré. La garde reste utile :
+    // tout module `disponible` doit mener à une route réelle, jamais un écran vide.
     const disponibles = MODULES.filter((m) => m.status === 'disponible');
-    assert.deepEqual(
-      disponibles.map((m) => m.id),
-      [],
-      'aucun écran de module n\'est livré avant le LOT 05'
+    for (const m of disponibles) {
+      assert.ok(
+        m.route && m.route.startsWith('/'),
+        `${m.id} est disponible sans route réelle`
+      );
+    }
+    assert.ok(
+      disponibles.some((m) => m.id === 'cockpit'),
+      'le Cockpit livré au LOT 05 doit être marqué disponible'
     );
   });
 

@@ -69,11 +69,11 @@ export type ModuleDescriptor = {
 /**
  * Le manifeste.
  *
- * À ce stade du projet, AUCUN écran de module n'existe : tout est donc
- * honnêtement `planifie`, avec le lot réel qui le livrera. Marquer un module
- * `nonActive` dans `/app` laisserait croire qu'il est construit mais non
- * souscrit — ce serait faux. L'état `nonActive` est démontré dans `/dev/shell`,
- * explicitement présenté comme une variation technique.
+ * Depuis le LOT 05, le Cockpit est le premier écran livré : il est `disponible`
+ * avec sa route réelle (`/app`). Tous les autres restent honnêtement `planifie`,
+ * avec le lot réel qui les livrera. Marquer un module `nonActive` dans `/app`
+ * laisserait croire qu'il est construit mais non souscrit — ce serait faux.
+ * L'état `nonActive` est démontré dans `/dev/shell`, variation technique.
  */
 export const MODULES: readonly ModuleDescriptor[] = [
   /* ------------------------------ OPÉRATIONS ----------------------------- */
@@ -83,8 +83,9 @@ export const MODULES: readonly ModuleDescriptor[] = [
     group: 'operations',
     icon: 'gauge',
     permission: 'cockpit.view',
-    status: 'planifie',
+    status: 'disponible',
     lot: 5,
+    route: '/app',
     summary: 'Vue de pilotage du jour : activité, alertes, décisions à prendre.'
   },
   {
