@@ -257,7 +257,7 @@ const SHELL_ACTIONS: CommandItem[] = [
 /** Actions métier : présentes mais planifiées, jamais exécutables ici. */
 const BUSINESS_ACTIONS: CommandItem[] = [
   { id: 'act-new-sale', section: 'actions', label: 'Nouvelle vente', icon: 'cart', keywords: ['vente', 'creer', 'pos'], kind: 'navigate', route: '/app/ventes/pos', permission: 'sales.create', hint: 'POS' },
-  { id: 'act-new-expense', section: 'actions', label: 'Enregistrer une dépense', icon: 'creditCard', keywords: ['depense', 'finance'], kind: 'planned', lot: 9, permission: 'expenses.create', hint: 'LOT 9' },
+  { id: 'act-new-expense', section: 'actions', label: 'Enregistrer une dépense', icon: 'creditCard', keywords: ['depense', 'finance'], kind: 'navigate', route: '/app/depenses/nouveau', permission: 'expenses.create', hint: 'Dépenses' },
   { id: 'act-new-reminder', section: 'actions', label: 'Créer une relance', icon: 'messageCircle', keywords: ['relance', 'crm'], kind: 'navigate', route: '/app/relances', permission: 'crm.remind', hint: 'CRM' },
   { id: 'act-new-stock', section: 'actions', label: 'Nouveau mouvement de stock', icon: 'package', keywords: ['stock', 'mouvement'], kind: 'navigate', route: '/app/stocks/mouvements/nouveau', permission: 'inventory.move', hint: 'Stocks' }
 ];

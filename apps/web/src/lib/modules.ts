@@ -149,7 +149,8 @@ export const MODULES: readonly ModuleDescriptor[] = [
     group: 'finance',
     icon: 'wallet',
     permission: 'treasury.view',
-    status: 'planifie',
+    status: 'disponible',
+    route: '/app/tresorerie',
     lot: 9,
     summary: 'Soldes, flux prévisionnels et besoins de financement.'
   },
@@ -159,7 +160,8 @@ export const MODULES: readonly ModuleDescriptor[] = [
     group: 'finance',
     icon: 'book',
     permission: 'accounting.view',
-    status: 'planifie',
+    status: 'disponible',
+    route: '/app/comptabilite',
     lot: 9,
     summary: 'Journal, grand livre et rapprochements.'
   },
@@ -169,7 +171,8 @@ export const MODULES: readonly ModuleDescriptor[] = [
     group: 'finance',
     icon: 'creditCard',
     permission: 'expenses.view',
-    status: 'planifie',
+    status: 'disponible',
+    route: '/app/depenses',
     lot: 9,
     summary: 'Notes de frais, justificatifs et validations.'
   },

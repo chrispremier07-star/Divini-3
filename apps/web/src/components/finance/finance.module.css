@@ -1,0 +1,295 @@
+/**
+ * DIVINI exo — Finance · styles (LOT 09)
+ *
+ * Tokens uniquement (contrat LOT 00). Montants en IBM Plex Mono alignés à droite.
+ * CASH VISION : passé plein, futur pointillé, frontière explicite, bascule
+ * négative en CRITIQUE avec marqueur + libellé. Aucun montant hors mono.
+ */
+
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.demoBanner {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  border: var(--bw-hairline) solid var(--border-default);
+  border-radius: var(--r-md);
+  background: var(--surface-recessed);
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+.title {
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+}
+
+.hint {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+.amount {
+  font-family: var(--font-mono);
+  text-align: right;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  border: var(--bw-hairline) solid var(--border-soft);
+  border-radius: var(--r-lg);
+  background: var(--surface-card);
+}
+
+.panelHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+.panelTitle {
+  font-size: var(--fs-base);
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+}
+
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: var(--sp-4);
+  align-items: start;
+}
+
+@media (max-width: 980px) {
+  .split { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ------------------------------ CASH VISION ------------------------------ */
+
+.answer {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  border: var(--bw-hairline) solid var(--border-soft);
+  border-left: var(--bw-thick) solid var(--accent);
+  border-radius: var(--r-md);
+  background: var(--surface-recessed);
+}
+
+.answer[data-negative='true'] {
+  border-left-color: var(--state-critical);
+}
+
+.answerText {
+  font-size: var(--fs-base);
+  color: var(--text-primary);
+}
+
+.answerText strong {
+  font-family: var(--font-mono);
+}
+
+.chartBox {
+  position: relative;
+  width: 100%;
+}
+
+.chartSvg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-4);
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+}
+
+.legendItem {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.legendSwatch {
+  width: var(--sp-4);
+  height: 0;
+  border-top: var(--bw-thick) solid var(--text-primary);
+}
+
+.legendSwatch[data-dashed='true'] {
+  border-top-style: dashed;
+}
+
+/* Marqueur temporel — pulse bref et UNIQUE (aucune boucle sur un graphique
+   financier, interdit §11). Désactivé en reduced-motion. */
+.timeMarker {
+  animation: cashMarkerPulse var(--dur-state) var(--ease-standard) 1;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+@keyframes cashMarkerPulse {
+  0% { opacity: 0.4; }
+  40% { opacity: 1; }
+  100% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .timeMarker { animation: none; }
+}
+
+/* ------------------------------- tableaux -------------------------------- */
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: var(--sp-2) var(--sp-3);
+  text-align: left;
+  border-bottom: var(--bw-hairline) solid var(--border-soft);
+  font-size: var(--fs-sm);
+}
+
+.table th {
+  color: var(--text-secondary);
+  font-weight: var(--fw-medium);
+}
+
+.table td.num,
+.table th.num {
+  text-align: right;
+  font-family: var(--font-mono);
+}
+
+/* ------------------------------- dépenses -------------------------------- */
+
+.stepper {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.step {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-1) var(--sp-3);
+  border: var(--bw-hairline) solid var(--border-soft);
+  border-radius: var(--r-max);
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+}
+
+.step[data-done='true'] {
+  border-color: var(--accent);
+  color: var(--text-primary);
+}
+
+.receiptBox {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+  border: var(--bw-hairline) solid var(--border-soft);
+  border-radius: var(--r-md);
+  background: var(--surface-recessed);
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-3);
+}
+
+@media (max-width: 720px) {
+  .infoGrid { grid-template-columns: minmax(0, 1fr); }
+}
+
+.infoItem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.infoLabel {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+}
+
+.infoValue {
+  font-size: var(--fs-sm);
+  color: var(--text-primary);
+}
+
+/* ------------------------------- périodes -------------------------------- */
+
+.periodRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: var(--sp-3);
+  border: var(--bw-hairline) solid var(--border-soft);
+  border-radius: var(--r-md);
+  background: var(--surface-recessed);
+}
+
+.periodRow[data-locked='true'] {
+  opacity: var(--op-disabled);
+}
+
+/* ------------------------------- devises --------------------------------- */
+
+.rateNote {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+}
+
+.converterGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-4);
+  align-items: end;
+}
+
+@media (max-width: 720px) {
+  .converterGrid { grid-template-columns: minmax(0, 1fr); }
+}
