@@ -1,0 +1,208 @@
+/**
+ * DIVINI exo — Styles de la galerie des primitives /dev/ui
+ * Aucune valeur en dur : tout provient du contrat de tokens.
+ */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--d-section);
+  width: 100%;
+  max-width: var(--grid-max-width);
+  margin: 0 auto;
+  padding: var(--d-page-pad-y) var(--d-page-pad-x);
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--sp-6);
+  padding-bottom: var(--sp-6);
+  border-bottom: var(--bw-accent) solid var(--border-default);
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  scroll-margin-top: var(--sp-8);
+}
+
+.sectionHead {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.sectionBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--d-gutter);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  padding: var(--d-card);
+  background-color: var(--surface-card);
+  border: var(--bw-hairline) solid var(--border-default);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-sm);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--d-gutter);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.stateCell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  min-width: var(--sp-24);
+  padding: var(--sp-3);
+  background-color: var(--surface-recessed);
+  border: var(--bw-hairline) solid var(--border-soft);
+  border-radius: var(--r-md);
+}
+
+.stateRender {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--d-gutter);
+}
+
+.stateGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--d-gutter);
+  align-items: start;
+}
+
+.contextBox {
+  display: flex;
+  align-items: center;
+  min-height: var(--sp-20);
+  padding: var(--sp-4);
+  background-color: var(--surface-recessed);
+  border: var(--bw-thin) dashed var(--border-default);
+  border-radius: var(--r-md);
+}
+
+.iconGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+  gap: var(--d-gutter);
+  padding: var(--sp-0);
+  margin: var(--sp-0);
+  list-style: none;
+}
+
+.iconCell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+  color: var(--text-primary);
+  background-color: var(--surface-recessed);
+  border: var(--bw-hairline) solid var(--border-soft);
+  border-radius: var(--r-md);
+  transition: background-color var(--dur-micro-fast) var(--ease-standard);
+}
+
+.iconCell:hover {
+  background-color: var(--surface-raised);
+}
+
+.iconCell span {
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+}
+
+.code {
+  padding: 0 var(--sp-1);
+  color: var(--text-accent);
+  background-color: var(--accent-soft);
+  border-radius: var(--r-xs);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+}
+
+/* Journal des actions — prouve qu'aucun bouton n'est décoratif. */
+.log {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--d-card);
+  background-color: var(--surface-card);
+  border: var(--bw-hairline) solid var(--border-default);
+  border-radius: var(--r-lg);
+}
+
+.logList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  padding: var(--sp-0);
+  margin: var(--sp-0);
+  list-style: none;
+}
+
+.logItem {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-height: var(--d-list-item);
+  padding: 0 var(--sp-3);
+  color: var(--text-primary);
+  border-bottom: var(--bw-hairline) solid var(--border-soft);
+  font-size: var(--fs-base);
+}
+
+.logItem:first-child {
+  color: var(--text-accent);
+}
+
+/* Mobile : <= 720 px */
+@media (max-width: 719.98px) {
+  .stateCell {
+    min-width: 100%;
+  }
+
+  .formGrid,
+  .stateGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .iconCell {
+    transition-duration: var(--dur-micro-fast);
+  }
+}

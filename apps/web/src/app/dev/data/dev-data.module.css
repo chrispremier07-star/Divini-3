@@ -1,0 +1,28 @@
+/**
+ * DIVINI exo — styles de la galerie /dev/data (LOT 03)
+ */
+
+.gallery {
+  display: flex;
+  flex-direction: column;
+  gap: var(--d-section-gap);
+}
+
+.banner {
+  margin: 0;
+  padding: var(--sp-3) var(--d-card);
+  border: var(--bw-thin) solid var(--border-warning);
+  border-radius: var(--r-md);
+  background-color: var(--state-warning);
+  color: var(--text-warning);
+  font-family: var(--t-caption-family);
+  font-size: var(--t-caption-size);
+  line-height: var(--t-caption-lh);
+}
+
+.stateRow {
+  display: flex;
+  align-items: center;
+  gap: var(--d-gutter);
+  flex-wrap: wrap;
+}

@@ -1,0 +1,30 @@
+/**
+ * DIVINI exo — styles de la route technique /dev/shell (LOT 02)
+ *
+ * Banc de vérification, pas un écran produit. Toutes les valeurs passent par
+ * les tokens ; aucune couleur, taille ou durée n'est écrite en littéral.
+ */
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--d-section-gap);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ctl-gap-sm);
+}
+
+.note {
+  margin: 0;
+  padding: var(--sp-3) var(--sp-4);
+  border: var(--bw-thin) solid var(--border-soft);
+  border-radius: var(--r-md);
+  background-color: var(--surface-recessed);
+  color: var(--text-secondary);
+  font-family: var(--t-caption-family);
+  font-size: var(--t-caption-size);
+  line-height: var(--t-caption-lh);
+}

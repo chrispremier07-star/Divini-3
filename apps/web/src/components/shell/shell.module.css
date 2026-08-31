@@ -1,0 +1,662 @@
+/**
+ * DIVINI exo — App Shell
+ *
+ * Valeurs issues du corpus l. 7861-7889 (V2.4) via le contrat de tokens :
+ *   - sidebar 220 px ouverte / 72 px compacte, transition 320 ms ;
+ *   - fond panel, border-right 1 px ;
+ *   - item actif accent-soft + accent ; hover panel-2 + text ;
+ *   - topbar compacte, border-bottom ;
+ *   - tabs : underline 2 px, position et largeur interpolées ~280 ms.
+ *
+ * Aucune valeur littérale : chaque dimension, couleur, rayon, ombre et durée
+ * passe par un token (contrôle `npm run check:hardcoded`).
+ */
+
+/* ============================== coquille ================================== */
+
+.shell {
+  display: grid;
+  grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+  min-height: 100vh;
+  background: var(--surface-page);
+  color: var(--text-primary);
+  transition: grid-template-columns var(--dur-panel) var(--ease-standard);
+}
+
+.shellCollapsed {
+  grid-template-columns: var(--sidebar-width-collapsed) minmax(0, 1fr);
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 100vh;
+}
+
+/* =============================== sidebar ================================== */
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--surface-card);
+  border-right: var(--bw-hairline) solid var(--border-default);
+  padding: var(--sidebar-pad-y) var(--sidebar-pad-x);
+  overflow: hidden;
+  z-index: var(--z-sidebar);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--ctl-gap-md);
+  height: var(--topbar-height);
+  padding: 0 var(--sp-1);
+  flex-shrink: 0;
+}
+
+.brandMark {
+  display: grid;
+  place-items: center;
+  width: var(--ctl-height-sm);
+  height: var(--ctl-height-sm);
+  flex-shrink: 0;
+  border-radius: var(--r-sm);
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.brandName {
+  font-family: var(--t-label-family);
+  font-size: var(--t-label-size);
+  font-weight: var(--t-label-weight);
+  letter-spacing: var(--t-label-ls);
+  color: var(--text-primary);
+  white-space: nowrap;
+  opacity: var(--op-full);
+  transition: opacity var(--dur-micro) var(--ease-standard);
+}
+
+/* En mode compacte, les libellés disparaissent plutôt que d'être tronqués. */
+.shellCollapsed .brandName,
+.shellCollapsed .navLabel,
+.shellCollapsed .navGroupLabel,
+.shellCollapsed .scopeText,
+.shellCollapsed .userFooterText {
+  opacity: var(--op-disabled);
+  width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.collapseButton {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.nav {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: var(--sidebar-section-gap) 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sidebar-section-gap);
+}
+
+.navGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sidebar-group-gap);
+}
+
+.navGroupLabel {
+  padding: 0 var(--sp-2) var(--sp-1);
+  font-family: var(--t-caption-family);
+  font-size: var(--t-caption-size);
+  font-weight: var(--t-caption-weight);
+  letter-spacing: var(--t-caption-ls);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  transition: opacity var(--dur-micro) var(--ease-standard);
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: var(--ctl-gap-md);
+  width: 100%;
+  height: var(--sidebar-item-height);
+  padding: 0 var(--sp-2);
+  border: var(--bw-none);
+  border-radius: var(--sidebar-item-radius);
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--t-body-family);
+  font-size: var(--t-body-size);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background var(--dur-micro-fast) var(--ease-standard),
+    color var(--dur-micro-fast) var(--ease-standard);
+}
+
+.navItem:hover:not(:disabled) {
+  background: var(--surface-raised);
+  color: var(--text-primary);
+}
+
+.navItem:focus-visible {
+  outline: var(--bw-accent) solid var(--accent);
+  outline-offset: var(--bw-thin);
+}
+
+.navItemActive {
+  background: var(--accent-soft);
+  color: var(--text-accent);
+}
+
+.navItemActive:hover:not(:disabled) {
+  background: var(--accent-soft);
+  color: var(--text-accent);
+}
+
+.navItem:disabled {
+  cursor: not-allowed;
+  opacity: var(--op-disabled);
+}
+
+.navIcon {
+  flex-shrink: 0;
+  width: var(--sidebar-icon-size);
+  height: var(--sidebar-icon-size);
+}
+
+.navLabel {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: opacity var(--dur-micro) var(--ease-standard);
+}
+
+/** Marqueur d'état : « LOT nn » ou « non activé ». Jamais un simple grisé. */
+.navStatus {
+  flex-shrink: 0;
+  font-family: var(--t-kbd-family);
+  font-size: var(--t-kbd-size);
+  color: var(--text-secondary);
+}
+
+.navStatusLocked {
+  color: var(--text-warning);
+}
+
+.navDetached {
+  border-top: var(--bw-hairline) solid var(--border-soft);
+  padding-top: var(--sidebar-section-gap);
+}
+
+/* ================================ topbar ================================== */
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--ctl-gap-lg);
+  height: var(--topbar-height);
+  padding: 0 var(--topbar-pad-x);
+  background: var(--surface-page);
+  border-bottom: var(--bw-hairline) solid var(--border-default);
+  position: sticky;
+  top: 0;
+  z-index: var(--z-topbar);
+}
+
+.topbarLeft {
+  display: flex;
+  align-items: center;
+  gap: var(--ctl-gap-md);
+  min-width: 0;
+}
+
+.topbarActions {
+  display: flex;
+  align-items: center;
+  gap: var(--ctl-gap-md);
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.mobileNavButton {
+  display: none;
+}
+
+/* Déclencheur de recherche : un bouton, pas un champ inerte. Le Command Center
+   arrive au LOT 04 — d'ici là il annonce explicitement son absence. */
+.searchTrigger {
+  display: flex;
+  align-items: center;
+  gap: var(--ctl-gap-md);
+  width: var(--topbar-search-width);
+  height: var(--ctl-height-sm);
+  padding: 0 var(--ctl-pad-xsm);
+  border: var(--bw-hairline) solid var(--border-default);
+  border-radius: var(--r-sm);
+  background: var(--surface-card);
+  color: var(--text-secondary);
+  font-family: var(--t-body-family);
+  font-size: var(--t-body-size);
+  cursor: pointer;
+  transition:
+    border-color var(--dur-micro-fast) var(--ease-standard),
+    background var(--dur-micro-fast) var(--ease-standard);
+}
+
+.searchTrigger:hover {
+  border-color: var(--border-soft);
+  background: var(--surface-raised);
+  color: var(--text-primary);
+}
+
+.searchTrigger:focus-visible {
+  outline: var(--bw-accent) solid var(--accent);
+  outline-offset: var(--bw-thin);
+}
+
+.searchHint {
+  flex: 1;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/** Raccourci clavier en IBM Plex Mono, comme l'exige le corpus l. 7876. */
+.kbd {
+  flex-shrink: 0;
+  padding: 0 var(--sp-1);
+  border: var(--bw-hairline) solid var(--border-soft);
+  border-radius: var(--r-xs);
+  background: var(--surface-recessed);
+  font-family: var(--t-kbd-family);
+  font-size: var(--t-kbd-size);
+  color: var(--text-secondary);
+}
+
+/* ========================= sélecteur de portée ============================ */
+
+.scopeButton {
+  display: flex;
+  align-items: center;
+  gap: var(--ctl-gap-sm);
+  height: var(--ctl-height-sm);
+  padding: 0 var(--ctl-pad-xsm);
+  border: var(--bw-hairline) solid var(--border-default);
+  border-radius: var(--r-sm);
+  background: var(--surface-card);
+  color: var(--text-primary);
+  font-family: var(--t-body-family);
+  font-size: var(--t-body-size);
+  cursor: pointer;
+  transition: background var(--dur-micro-fast) var(--ease-standard);
+}
+
+.scopeButton:hover {
+  background: var(--surface-raised);
+}
+
+.scopeButton:focus-visible {
+  outline: var(--bw-accent) solid var(--accent);
+  outline-offset: var(--bw-thin);
+}
+
+.scopeText {
+  max-width: 12rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: opacity var(--dur-micro) var(--ease-standard);
+}
+
+/* ============================== barre contexte ============================ */
+
+.contextBar {
+  display: flex;
+  align-items: center;
+  gap: var(--ctl-gap-lg);
+  min-height: var(--tabs-height);
+  padding: 0 var(--topbar-pad-x);
+  border-bottom: var(--bw-hairline) solid var(--border-soft);
+  background: var(--surface-page);
+  overflow-x: auto;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: var(--ctl-gap-sm);
+  font-family: var(--t-caption-family);
+  font-size: var(--t-caption-size);
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.breadcrumbLink {
+  border: var(--bw-none);
+  background: transparent;
+  padding: 0;
+  color: var(--text-secondary);
+  font: inherit;
+  cursor: pointer;
+}
+
+.breadcrumbLink:hover {
+  color: var(--text-primary);
+  text-decoration: underline;
+}
+
+.breadcrumbLink:focus-visible {
+  outline: var(--bw-accent) solid var(--accent);
+  outline-offset: var(--bw-thin);
+  border-radius: var(--r-xs);
+}
+
+.breadcrumbCurrent {
+  color: var(--text-primary);
+}
+
+/* ================================== tabs ================================== */
+
+.tabs {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  gap: var(--tabs-gap);
+  height: var(--tabs-height);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tab {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 0 var(--tabs-item-pad-x);
+  border: var(--bw-none);
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--t-body-family);
+  font-size: var(--t-body-size);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color var(--dur-micro-fast) var(--ease-standard);
+}
+
+.tab:hover {
+  color: var(--text-primary);
+}
+
+.tab:focus-visible {
+  outline: var(--bw-accent) solid var(--accent);
+  outline-offset: calc(-1 * var(--bw-accent));
+  border-radius: var(--r-xs);
+}
+
+.tabActive {
+  color: var(--text-primary);
+}
+
+/**
+ * Underline unique, déplacé par translation + largeur.
+ *
+ * Le corpus l. 7885-7888 impose « position et largeur interpolées, jamais de
+ * changement brutal » : un underline rendu par onglet apparaîtrait et
+ * disparaîtrait, il ne se déplacerait pas. Un seul élément est donc positionné
+ * en absolu depuis les mesures de l’onglet actif.
+ */
+.tabUnderline {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: var(--tabs-underline);
+  background: var(--accent);
+  border-radius: var(--r-xs);
+  transition:
+    transform var(--dur-state) var(--ease-standard),
+    width var(--dur-state) var(--ease-standard);
+}
+
+/* ============================ zone de travail ============================= */
+
+.workspace {
+  flex: 1;
+  padding: var(--d-page-pad-y) var(--d-page-pad-x);
+  max-width: var(--grid-max-width);
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* ============================== pied utilisateur ========================== */
+
+.userFooter {
+  display: flex;
+  align-items: center;
+  gap: var(--ctl-gap-md);
+  padding: var(--sp-2) var(--sp-1);
+  border-top: var(--bw-hairline) solid var(--border-soft);
+  flex-shrink: 0;
+}
+
+.userFooterText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  transition: opacity var(--dur-micro) var(--ease-standard);
+}
+
+.userFooterName {
+  font-family: var(--t-body-family);
+  font-size: var(--t-body-size);
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.userFooterRole {
+  font-family: var(--t-caption-family);
+  font-size: var(--t-caption-size);
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/**
+ * Mention obligatoire : la session est une démonstration. Aucune
+ * authentification réelle n'existe et rien ne doit le laisser croire
+ * (socle commun §6.3).
+ */
+.demoNotice {
+  padding: var(--sp-2) var(--sp-1);
+  border-top: var(--bw-hairline) solid var(--border-soft);
+  font-family: var(--t-caption-family);
+  font-size: var(--t-caption-size);
+  color: var(--text-warning);
+}
+
+/* ============================ statut de connexion ========================= */
+
+.connection {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ctl-gap-sm);
+  height: var(--ctl-height-sm);
+  padding: 0 var(--ctl-pad-xsm);
+  border: var(--bw-hairline) solid var(--border-soft);
+  border-radius: var(--r-sm);
+  font-family: var(--t-caption-family);
+  font-size: var(--t-caption-size);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.connectionOnline {
+  color: var(--text-success);
+  border-color: var(--border-success);
+}
+
+.connectionOffline {
+  color: var(--text-secondary);
+}
+
+.connectionSyncing {
+  color: var(--text-info);
+  border-color: var(--border-info);
+}
+
+.connectionConflict,
+.connectionError {
+  color: var(--text-warning);
+  border-color: var(--border-warning);
+}
+
+.spin {
+  animation: shell-spin var(--dur-skeleton) var(--ease-linear) infinite;
+}
+
+@keyframes shell-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ============================ tiroir mobile =============================== */
+
+.scrim {
+  position: fixed;
+  inset: 0;
+  background: var(--surface-overlay);
+  z-index: var(--z-backdrop);
+}
+
+.drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--sidebar-drawer-width);
+  max-width: 100vw;
+  background: var(--surface-card);
+  border-right: var(--bw-hairline) solid var(--border-default);
+  z-index: var(--z-drawer);
+  display: flex;
+  flex-direction: column;
+  padding: var(--sidebar-pad-y) var(--sidebar-pad-x);
+  overflow-y: auto;
+  animation: shell-drawer-in var(--dur-panel) var(--ease-enter);
+}
+
+@keyframes shell-drawer-in {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.drawerNav {
+  flex: 1;
+  overflow-y: visible;
+}
+
+/* ============================== responsive ================================ */
+
+/* Tablette 721-980 : sidebar compacte, recherche réduite à l'icône. */
+@media (max-width: 979.98px) {
+  .shell,
+  .shellCollapsed {
+    grid-template-columns: var(--sidebar-width-collapsed) minmax(0, 1fr);
+  }
+
+  .shell .brandName,
+  .shell .navLabel,
+  .shell .navGroupLabel,
+  .shell .userFooterText {
+    opacity: var(--op-disabled);
+    width: 0;
+    overflow: hidden;
+  }
+
+  .searchTrigger {
+    width: auto;
+  }
+
+  .searchHint {
+    display: none;
+  }
+}
+
+/* Mobile <= 720 : sidebar masquée, tiroir plein écran depuis la topbar. */
+@media (max-width: 719.98px) {
+  .shell,
+  .shellCollapsed {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  .mobileNavButton {
+    display: inline-flex;
+  }
+
+  .topbar {
+    height: var(--topbar-height-compact);
+  }
+
+  .workspace {
+    padding: var(--d-page-pad-y) var(--sp-4);
+  }
+
+  .breadcrumbOverflow {
+    display: none;
+  }
+}
+
+/* ========================= prefers-reduced-motion ========================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .shell,
+  .navItem,
+  .searchTrigger,
+  .scopeButton,
+  .tab,
+  .tabUnderline,
+  .brandName,
+  .navLabel {
+    transition-duration: var(--dur-instant);
+  }
+
+  .drawer {
+    animation-duration: var(--dur-instant);
+  }
+
+  /* Le underline est positionné directement, sans interpolation. */
+  .tabUnderline {
+    transition: none;
+  }
+
+  .spin {
+    animation: none;
+  }
+}
