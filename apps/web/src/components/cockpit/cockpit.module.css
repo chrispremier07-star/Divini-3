@@ -26,6 +26,13 @@
   flex-wrap: wrap;
 }
 
+.headActions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+}
+
 .title {
   font-size: var(--fs-xl);
   line-height: var(--lh-tight);
@@ -97,27 +104,17 @@
 
 /* --------------------------------- Grille --------------------------------- */
 
+/* Une seule colonne : un ordre de lecture vertical, calme et aéré.
+   Les KPI et les signaux ont leurs propres grilles internes. */
 .grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: var(--sp-5);
   align-items: start;
 }
 
-.grid > div {
+.grid > * {
   min-width: 0;
-}
-
-@media (min-width: 1281px) {
-  .grid {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-@media (max-width: 720px) {
-  .grid {
-    grid-template-columns: 1fr;
-  }
 }
 
 /* -------------------------------- Sections -------------------------------- */

@@ -18,11 +18,16 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
   type ReactNode
 } from 'react';
+import { usePathname } from 'next/navigation';
 
+import {
+  moduleForPathname,
+} from './modules';
 import {
   resolveScope,
   TENANT_SCOPE,
@@ -87,9 +92,20 @@ export function ShellStateProvider({ children }: { children: ReactNode }) {
   const [scope, setScopeRaw] = useState<Scope>(TENANT_SCOPE);
   const [collapsed, setCollapsed] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
-  const [activeModuleId, setActiveModuleId] = useState<string | null>(null);
   const [connection, setConnection] = useState<ConnectionState>('online');
   const [workspaceState, setWorkspaceState] = useState<WorkspaceState>('empty');
+
+  // Le module actif est déduit de l'URL : la sidebar et la zone de travail
+  // reflètent la route réelle. `usePathname` vaut `null` hors App Router
+  // (tests, galeries) : dans ce cas on part de `null` et l'état reste pilotable
+  // manuellement via `setActiveModuleId`.
+  const pathname = usePathname();
+  const [activeModuleId, setActiveModuleId] = useState<string | null>(() =>
+    moduleForPathname(pathname)
+  );
+  useEffect(() => {
+    setActiveModuleId(moduleForPathname(pathname));
+  }, [pathname]);
 
   /** La portée est toujours résolue à l'écriture, jamais à la lecture. */
   const setScope = useCallback((next: Scope) => setScopeRaw(resolveScope(next)), []);
