@@ -16,7 +16,7 @@
 
 'use client';
 
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { KpiCard, KpiGrid, Chart, ProgressBar } from '../data';
@@ -167,15 +167,7 @@ export function Cockpit({ demoState = 'auto' }: CockpitProps) {
   const router = useRouter();
 
   const [period, setPeriod] = useState<CockpitPeriod>('today');
-  const [loading, setLoading] = useState(true);
   const [missions, setMissions] = useState(MISSIONS);
-
-  // Chargement simulé au montage et au changement de période (borné, sans boucle).
-  useEffect(() => {
-    setLoading(true);
-    const t = window.setTimeout(() => setLoading(false), 350);
-    return () => window.clearTimeout(t);
-  }, [period]);
 
   const effective: CockpitState | 'ready' =
     demoState !== 'auto' ? demoState : connection === 'offline' ? 'offline' : 'ready';
@@ -263,7 +255,7 @@ export function Cockpit({ demoState = 'auto' }: CockpitProps) {
           missingPermission="cockpit.view"
           contact="un administrateur"
         />
-      ) : effective === 'loading' || loading ? (
+      ) : effective === 'loading' ? (
         <div className={styles.skeletons}>
           <SkeletonBlock lines={4} />
           <SkeletonBlock lines={3} />

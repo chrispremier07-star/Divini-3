@@ -15,7 +15,7 @@
 'use client';
 
 import { useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 import { Icon } from '../ui/Icon';
 import { IconButton } from '../ui/Button';
@@ -43,6 +43,7 @@ type SidebarItemProps = {
 
 export function SidebarItem({ module, active, compact, onSelect }: SidebarItemProps) {
   const action = resolveModuleAction(module);
+  const href = action.kind === 'navigate' ? action.route : undefined;
 
   /**
    * Le marqueur d'état n'est pas décoratif : il dit à l'utilisateur ce que le
@@ -64,15 +65,9 @@ export function SidebarItem({ module, active, compact, onSelect }: SidebarItemPr
       : module.label
     : undefined;
 
-  return (
-    <button
-      type="button"
-      className={`${styles.navItem} ${active ? styles.navItemActive : ''}`}
-      onClick={() => onSelect(module)}
-      aria-current={active ? 'page' : undefined}
-      title={tooltip}
-      aria-label={tooltip}
-    >
+  const className = `${styles.navItem} ${active ? styles.navItemActive : ''}`;
+  const content = (
+    <>
       <Icon name={module.icon} size="var(--sidebar-icon-size)" className={styles.navIcon} />
       <span className={styles.navLabel}>{module.label}</span>
       {statusLabel ? (
@@ -82,6 +77,39 @@ export function SidebarItem({ module, active, compact, onSelect }: SidebarItemPr
           {statusLabel}
         </span>
       ) : null}
+    </>
+  );
+
+  // Module disponible : un VRAI lien. Next précharge la route (prefetch), la
+  // navigation est quasi instantanée en production, et le clic molette /
+  // « ouvrir dans un onglet » fonctionne. Les modules planifiés/non activés
+  // restent des boutons : ils ne doivent pas ouvrir de page fictive.
+  if (href) {
+    return (
+      <Link
+        href={href}
+        prefetch
+        className={className}
+        onClick={() => onSelect(module)}
+        aria-current={active ? 'page' : undefined}
+        title={tooltip}
+        aria-label={tooltip}
+      >
+        {content}
+      </Link>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      className={className}
+      onClick={() => onSelect(module)}
+      aria-current={active ? 'page' : undefined}
+      title={tooltip}
+      aria-label={tooltip}
+    >
+      {content}
     </button>
   );
 }
@@ -170,29 +198,20 @@ type SidebarProps = {
 export function Sidebar({ variant = 'docked' }: SidebarProps) {
   const { collapsed, toggleCollapsed, activeModuleId, setActiveModuleId, setMobileNavOpen, scope } =
     useShellState();
-  const router = useRouter();
 
   const compact = variant === 'docked' ? collapsed : false;
 
   const handleSelect = useCallback(
     (module: ModuleDescriptor) => {
-      const action = resolveModuleAction(module);
-      setActiveModuleId(module.id);
-
-      // Un module disponible mène à sa route réelle : sans cela la barre
-      // latérale ne ferait que changer un libellé et l'utilisateur resterait
-      // bloqué sur l'écran courant (défaut constaté).
-      if (action.kind === 'navigate' && action.route) {
-        if (router) router.push(action.route);
-        else window.location.assign(action.route);
-      }
+      // La navigation des modules disponibles est portée par de vrais
+      // `<Link prefetch>` (voir SidebarItem) : quasi instantanée en production.
+      // Ici on synchronise l'état visuel et on referme le tiroir mobile.
       // `planned` / `subscribe` : pas de navigation — la zone de travail affiche
       // l'état honnête « en construction — LOT n » ou le renvoi Abonnement.
-
-      // Sur mobile, choisir un module referme le tiroir.
+      setActiveModuleId(module.id);
       setMobileNavOpen(false);
     },
-    [router, setActiveModuleId, setMobileNavOpen]
+    [setActiveModuleId, setMobileNavOpen]
   );
 
   const groups = modulesByGroup();
