@@ -28,6 +28,7 @@ import {
   NAV_GROUPS,
   detachedModules,
   findModule,
+  moduleForPathname,
   modulesByGroup,
   resolveModuleAction
 } from '../apps/web/src/lib/modules.ts';
@@ -475,5 +476,27 @@ describe('Robustesse', () => {
       .filter((id) => id.length > 0 && id !== 'test-root');
     const dupes = ids.filter((id, i) => ids.indexOf(id) !== i);
     assert.deepEqual(dupes, [], `ids dupliqués : ${[...new Set(dupes)].join(', ')}`);
+  });
+});
+
+describe('Navigation — module déduit de l’URL (correction « on reste sur le cockpit »)', () => {
+  it('chaque route de module disponible se résout vers son module', () => {
+    for (const m of MODULES) {
+      if (m.status !== 'disponible' || !m.route) continue;
+      assert.equal(moduleForPathname(m.route), m.id, `${m.route} ne résout pas ${m.id}`);
+      // Les sous-routes héritent du module parent.
+      assert.equal(moduleForPathname(`${m.route}/xyz`), m.id, `${m.route}/xyz ne résout pas ${m.id}`);
+    }
+  });
+
+  it('le préfixe le plus long gagne (ventes vs accueil)', () => {
+    assert.equal(moduleForPathname('/app'), 'cockpit');
+    assert.equal(moduleForPathname('/app/ventes'), 'ventes');
+    assert.equal(moduleForPathname('/app/ventes/cmd-1'), 'ventes');
+  });
+
+  it('un chemin sans module retourne null', () => {
+    assert.equal(moduleForPathname('/dev/shell'), null);
+    assert.equal(moduleForPathname(null), null);
   });
 });

@@ -443,6 +443,32 @@ export function findModule(id: string): ModuleDescriptor | undefined {
 }
 
 /**
+ * Module dont la route correspond à un chemin donné (préfixe le plus long).
+ *
+ * Permet au shell de déduire le module actif de l'URL : la barre latérale se
+ * surligne correctement et la zone de travail rend l'écran de la route sans
+ * afficher le texte d'accueil du LOT 02 au-dessus du contenu réel.
+ *
+ * Retourne `null` si aucun module disponible ne couvre ce chemin.
+ */
+export function moduleForPathname(pathname: string | null): string | null {
+  if (!pathname) return null;
+  let bestId: string | null = null;
+  let bestLen = -1;
+  for (const m of MODULES) {
+    if (m.status !== 'disponible' || !m.route) continue;
+    const r = m.route;
+    if (pathname === r || pathname.startsWith(r + '/')) {
+      if (r.length > bestLen) {
+        bestLen = r.length;
+        bestId = m.id;
+      }
+    }
+  }
+  return bestId;
+}
+
+/**
  * Ce qu'un clic sur un module doit produire.
  *
  * Centralisé ici pour qu'aucun composant n'invente son propre comportement :
