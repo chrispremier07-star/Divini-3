@@ -30,7 +30,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         {/* Thème posé avant le premier paint : aucun flash de thème au chargement. */}
         <script dangerouslySetInnerHTML={{ __html: ANTI_FLASH_SCRIPT }} />
       </head>
-      <body>
+      {/* suppressHydrationWarning : certaines extensions de navigateur (sécurité,
+          VPN) ajoutent des attributs (bis_*, __processed_*) sur <html>/<body>
+          avant l'hydratation ; on évite ainsi un avertissement de mismatch
+          purement cosmétique. Vérifié : le HTML serveur ne contient aucun de
+          ces attributs. */}
+      <body suppressHydrationWarning>
         <AppearanceProvider>{children}</AppearanceProvider>
       </body>
     </html>
